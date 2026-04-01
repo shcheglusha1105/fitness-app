@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#2e7d32">
+    <title>Фитнес-помощник | 300 руб/год</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            background: #e5f0e2;
+            padding: 16px 12px 40px;
+            color: #1d3e1a;
+        }
+        .app {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 36px;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+            overflow: hidden;
+            padding: 18px 16px 24px;
+        }
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #1f6e1c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+        .avatar-btn {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 42px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-btn {
+            background: #e1efdc;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #2a6428;
+        }
+        .upgrade-btn {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .trial-badge {
+            background: #ff9800;
+            color: white;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .pro-badge {
+            background: #2e7d32;
+            color: white;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .admin-badge {
+            background: #9c27b0;
+            color: white;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .guest-badge {
+            background: #888;
+            color: white;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .expired-badge {
+            background: #b33;
+            color: white;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            min-width: 200px;
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+        }
+        .dropdown.show { display: block; }
+        .dropdown-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.1s;
+        }
+        .dropdown-item:hover { background: #f0f7ed; }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            padding: 24px;
+            max-width: 420px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #1f6e1c;
+            font-size: 1.4rem;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #cde2c6;
+            border-radius: 28px;
+            font-size: 14px;
+            outline: none;
+        }
+        .modal-content button {
+            width: 100%;
+            padding: 12px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .modal-content .close-btn {
+            background: #e1efdc;
+            color: #2a6428;
+        }
+        .auth-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            border-radius: 40px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .upgrade-message {
+            background: #fff3e0;
+            border-radius: 20px;
+            padding: 14px;
+            text-align: center;
+            margin: 16px 0;
+            border: 1px solid #ffe0b5;
+        }
+        .edit-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .edit-btn {
+            background: #e1efdc;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #2a6428;
+        }
+        .edit-btn.primary {
+            background: #2e7d32;
+            color: white;
+        }
+        .disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: #f0f7ed;
+            padding: 6px;
+            border-radius: 60px;
+        }
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px 0;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            color: #446d3e;
+        }
+        .tab-btn.active {
+            background: #2e7d32;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            animation: fade 0.2s;
+        }
+        .tab-content.active { display: block; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        .menu-table, .exercise-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            background: #fefef9;
+            border-radius: 20px;
+            overflow: auto;
+            display: table;
+        }
+        .menu-table th, .exercise-table th {
+            background: #2e7d32;
+            color: white;
+            padding: 12px 8px;
+            font-size: 12px;
+            border: 1px solid #479c46;
+            text-align: center;
+        }
+        .menu-table td, .exercise-table td {
+            border: 1px solid #cde2c6;
+            padding: 10px 8px;
+            vertical-align: top;
+            background: white;
+        }
+        .workout-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #e8f0e5;
+            border: 2px solid #8bbd7a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        .workout-circle.active {
+            background: #2e7d32;
+            border-color: #2e7d32;
+            color: white;
+        }
+        .workout-circle.active::after { content: "✓"; }
+        .workout-circle:not(.active)::after { content: "○"; color: #8bbd7a; font-size: 20px; }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 16px 0 12px;
+        }
+        .month-year {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: #eff7ec;
+            padding: 6px 16px;
+            border-radius: 40px;
+        }
+        .nav-btn {
+            background: #e1efdc;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 38px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.7rem;
+            margin-bottom: 6px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .day-cell {
+            background: #f9fcf7;
+            border-radius: 40px;
+            text-align: center;
+            padding: 8px 2px;
+            font-size: 0.8rem;
+            border: 1px solid #ddecd6;
+            cursor: pointer;
+        }
+        .day-cell.selected { background: #2e7d32; color: white; }
+        .day-cell.today { border: 2px solid #ffb74d; }
+        .checklist-panel {
+            background: #fefef7;
+            border-radius: 28px;
+            padding: 16px;
+            border: 1px solid #d9e8d2;
+        }
+        .check-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2eedb;
+        }
+        .check-toggle {
+            width: 28px;
+            height: 28px;
+            border-radius: 30px;
+            border: 2px solid #8bbd7a;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .check-toggle.done {
+            background: #2e7d32;
+            color: white;
+            border-color: #2e7d32;
+        }
+        .stats-row {
+            background: #eef5ea;
+            border-radius: 24px;
+            padding: 10px;
+            margin-top: 14px;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        .reset-stats {
+            background: #f5e6d3;
+            border-radius: 30px;
+            padding: 6px;
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 12px;
+            cursor: pointer;
+        }
+        .rest-day-badge {
+            background: #f9e0b0;
+            color: #b97f10;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            display: inline-block;
+        }
+        .exercise-input, .menu-input {
+            width: 100%;
+            padding: 8px;
+            font-size: 11px;
+            border: 1px solid #c2dbbd;
+            border-radius: 12px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .add-row-btn {
+            background: #e1efdc;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+        .delete-row-btn {
+            background: #ffe0d0;
+            border: none;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            cursor: pointer;
+            color: #b33;
+        }
+        .note-text {
+            font-size: 10px;
+            color: #6e7c68;
+            margin-top: 8px;
+        }
+        .week-grid {
+            overflow-x: auto;
+        }
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff9800;
+            margin: 16px 0;
+        }
+        @media (max-width: 900px) {
+            .menu-table td, .menu-table th { font-size: 10px; padding: 6px 4px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="header-row">
+        <h1>🏋️‍♀️ Фитнес-помощник</h1>
+        <div class="user-area" id="userArea"></div>
+    </div>
+    <div class="sub">чек-лист • меню • упражнения • гость: локальное редактирование • регистрация: 7 дней бесплатно • PRO: 300₽/год</div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="checklist">📋 Чек-лист</button>
+        <button class="tab-btn" data-tab="menu">🥗 Меню на неделю</button>
+        <button class="tab-btn" data-tab="exercises">🏋️ Упражнения</button>
+    </div>
+
+    <div id="tab-checklist" class="tab-content active">
+        <div class="calendar-header">
+            <button class="nav-btn" id="prevMonthBtn">←</button>
+            <span class="month-year" id="monthYearDisplay"></span>
+            <button class="nav-btn" id="nextMonthBtn">→</button>
+        </div>
+        <div class="weekdays"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+        <div class="checklist-panel">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <strong id="selectedDateTitle">—</strong>
+                <span id="weekProgress">неделя: --%</span>
+            </div>
+            <div id="checklistItems"></div>
+            <div class="stats-row" id="dayStats">✅ выполнено 0 из 9</div>
+            <div id="resetWeekBtn" class="reset-stats">🔄 сбросить отметки за неделю</div>
+        </div>
+    </div>
+
+    <div id="tab-menu" class="tab-content">
+        <div id="menuEditBar" class="edit-bar"><button id="editMenuBtn" class="edit-btn">✏️ Редактировать меню</button><button id="saveMenuBtn" class="edit-btn primary" style="display:none;">💾 Сохранить</button><button id="resetMenuBtn" class="edit-btn" style="display:none;">↩️ Сбросить</button></div>
+        <div id="menuContainer" class="week-grid"></div>
+        <div id="menuUpgradeMsg" class="upgrade-message" style="display:none;">🔒 Доступ к редактированию закончился. Оформите PRO подписку на 1 год — 300 ₽.<br><button id="upgradeFromMenuBtn" class="upgrade-btn" style="margin-top:8px;">🚀 Оформить PRO (300₽/год)</button></div>
+        <div class="note-text">💡 Кружок 🟢 отмечает дни с тренировкой. Используйте Enter для переноса строк.</div>
+    </div>
+
+    <div id="tab-exercises" class="tab-content">
+        <div id="exercisesEditBar" class="edit-bar"><button id="editExercisesBtn" class="edit-btn">✏️ Редактировать программу</button><button id="saveExercisesBtn" class="edit-btn primary" style="display:none;">💾 Сохранить</button><button id="resetExercisesBtn" class="edit-btn" style="display:none;">↩️ Сбросить</button></div>
+        <div id="exercisesContainer" class="week-grid"></div>
+        <div id="exercisesUpgradeMsg" class="upgrade-message" style="display:none;">🔒 Доступ к редактированию закончился. Оформите PRO подписку на 1 год — 300 ₽.<br><button id="upgradeFromExercisesBtn" class="upgrade-btn" style="margin-top:8px;">🚀 Оформить PRO (300₽/год)</button></div>
+        <div class="note-text">💡 В режиме редактирования можно добавлять/удалять строки упражнений.</div>
+    </div>
+</div>
+
+<script>
+    // ===================== КОНФИГУРАЦИЯ =====================
+    const API_URL = 'https://fitness-backend-lso6.onrender.com';
+    const TRIAL_DAYS = 7;
+    const PRO_DAYS = 365;
+    const PRO_PRICE = 300;
+    const ADMIN_EMAIL = 'admin@fitness.ru';
+    const ADMIN_PASSWORD = 'admin123';
+    
+    // ===================== ПОЛНОЕ МЕНЮ (7 дней) =====================
+    const DEFAULT_MENU = {
+        mon: { breakfast: "Омлет из 2 яиц + шпинат\n½ авокадо\nзеленый чай", lunch: "Куриная грудка 150г\nгречка 120г\nсалат огурцы/помидоры\n1 ч.л. оливкового масла", snack: "—", dinner: "Рыба запеченная 150г\nтушеные кабачки с цветной капустой 300г\n1 ч.л. масла" },
+        tue: { breakfast: "Греческий йогурт 2% 200г\nягоды + 1 ч.л. меда\n2 отварных яйца", lunch: "Индейка 150г\nкиноа 120г\nовощи-гриль 300г\n1 ч.л. масла", snack: "—", dinner: "Творог 5% 180г\nогурец + зелень\n10г грецких орехов" },
+        wed: { breakfast: "Омлет из 2 яиц с овощами\n1 тост цельнозерновой\nзеленый чай", lunch: "Куриная грудка 150г\nбулгур 120г\nсалат из свежих овощей\n1 ч.л. масла", snack: "18:00 яблоко + 10г миндаля", dinner: "20:00 рыба на гриле 150г\nзапеченные овощи 300г\n1 ч.л. масла" },
+        thu: { breakfast: "Овсянка 40г на воде\n2 яйца пашот\n½ авокадо", lunch: "Индейка 150г\nгречка 120г\nтушеные овощи 300г\n1 ч.л. масла", snack: "17:00 творог 5% 150г + ягоды", dinner: "20:00 куриная грудка 150г\nзапеченные овощи 300г\n1 ч.л. масла" },
+        fri: { breakfast: "Омлет из 2 яиц + шпинат\n½ авокадо\nзеленый чай", lunch: "Рыба 150г\nкиноа 120г\nсалат огурцы/помидоры\n1 ч.л. масла", snack: "—", dinner: "Творог 5% 180г\nогурец + зелень" },
+        sat: { breakfast: "Омлет из 2 яиц с грибами\n1 тост цельнозерновой\nзеленый чай", lunch: "Куриная грудка 150г\nгречка 120г\nсалат из свежих овощей\n1 ч.л. масла", snack: "17:00 яблоко + 10г миндаля", dinner: "20:00 рыба на гриле 150г\nзапеченные овощи 300г\n1 ч.л. масла" },
+        sun: { breakfast: "Греческий йогурт 2% 200г\nягоды + 1 ч.л. меда\n1 отварное яйцо", lunch: "Индейка 150г\nкиноа 120г\nовощи-гриль 300g\n1 ч.л. масла", snack: "17:00 творог 5% 150г + ягоды", dinner: "20:00 куриная грудка 150г\nзапеченные овощи 300г\n1 ч.л. масла" }
+    };
+    
+    const DEFAULT_WORKOUT_DAYS = { mon: false, tue: false, wed: true, thu: true, fri: false, sat: true, sun: true };
+    
+    // ===================== ПОЛНЫЕ УПРАЖНЕНИЯ (все дни) =====================
+    const DEFAULT_EXERCISES = {
+        mon: { title: "ПН — день отдыха", exercises: [] },
+        tue: { title: "ВТ — день отдыха", exercises: [] },
+        wed: { title: "СР — отель (руки + плечи + кардио)", exercises: [
+            { name: "Разгибание рук (верхний блок, канат)", weight: "5–7", sets: "4", reps: "12–15" },
+            { name: "Сгибание рук с гантелями сидя", weight: "3–4 (кажд)", sets: "3", reps: "10–12" },
+            { name: "Махи гантелями в стороны", weight: "1–2", sets: "3", reps: "12–15" },
+            { name: "Французский жим с гантелью сидя", weight: "2–3", sets: "3", reps: "12–15 на руку" },
+            { name: "Махи в наклоне (задняя дельта)", weight: "2–3", sets: "3", reps: "12–15" },
+            { name: "Кардио: эллипс/вело", weight: "—", sets: "25 мин", reps: "пульс 110–130" }
+        ] },
+        thu: { title: "ЧТ — зал (верх + спина + пресс + кардио)", exercises: [
+            { name: "Тяга вертикального блока к груди", weight: "15–20", sets: "3", reps: "12–15" },
+            { name: "Тяга горизонтального блока к поясу", weight: "15–20", sets: "3", reps: "12–15" },
+            { name: "Отжимания от скамьи спиной (обратные)", weight: "свой вес", sets: "3", reps: "12–15" },
+            { name: "Сгибание рук на нижнем блоке", weight: "5–7", sets: "3", reps: "12–15" },
+            { name: "Махи гантелями в стороны", weight: "1–2", sets: "3", reps: "12–15" },
+            { name: "Скручивания (руки на груди)", weight: "—", sets: "3", reps: "20" },
+            { name: "Вакуум", weight: "—", sets: "3", reps: "10–15 сек" },
+            { name: "Ходьба дорожка (уклон 5–7)", weight: "—", sets: "30–35 мин", reps: "пульс 110–130" }
+        ] },
+        fri: { title: "ПТ — день отдыха", exercises: [] },
+        sat: { title: "СБ — зал (низ — только тонус + кардио)", exercises: [
+            { name: "Жим ногами (стопы узко и низко)", weight: "30–40", sets: "3", reps: "12–15" },
+            { name: "Разгибание ног сидя", weight: "10–15", sets: "3", reps: "12–15" },
+            { name: "Сгибание ног лежа", weight: "10–15", sets: "3", reps: "12–15" },
+            { name: "Ягодичный мост", weight: "свой вес", sets: "3", reps: "15–20" },
+            { name: "Кардио: эллипс/вело", weight: "—", sets: "35 мин", reps: "пульс 110–130" },
+            { name: "Вакуум", weight: "—", sets: "3", reps: "10–15 сек" }
+        ] },
+        sun: { title: "ВС — зал (руки + плечи + кардио)", exercises: [
+            { name: "Разгибание рук (блок, канат)", weight: "5–7", sets: "4", reps: "12–15" },
+            { name: "Сгибание рук с гантелями на наклонной", weight: "3–4", sets: "3", reps: "10–12" },
+            { name: "Французский жим с гантелью (одна рука)", weight: "2–3", sets: "3", reps: "12–15 на руку" },
+            { name: "Махи гантелями в стороны", weight: "1–2", sets: "3", reps: "12–15" },
+            { name: "Махи в наклоне (задняя дельта)", weight: "2–3", sets: "3", reps: "12–15" },
+            { name: "Планка на прямых руках", weight: "—", sets: "3", reps: "60 сек" },
+            { name: "Ходьба дорожка (уклон 5–7)", weight: "—", sets: "30–35 мин", reps: "пульс 110–130" }
+        ] }
+    };
+    
+    const CHECK_ITEMS = [
+        { id: "breakfast", label: "Завтрак (белок + сложные углеводы)", emoji: "🥣" },
+        { id: "lunch", label: "Обед (белок + овощи + крупа)", emoji: "🍱" },
+        { id: "snack", label: "Перекус (по расписанию)", emoji: "🍎" },
+        { id: "dinner", label: "Ужин (белок + овощи, без круп)", emoji: "🌙" },
+        { id: "water", label: "Вода 1.5–2 л", emoji: "💧" },
+        { id: "noSugar", label: "Нет сахара / алкоголя", emoji: "🚫" },
+        { id: "workout", label: "Тренировка (по плану)", emoji: "🏋️‍♀️" },
+        { id: "vacuumPlank", label: "Вакуум + планка", emoji: "🧘‍♀️" },
+        { id: "sleep", label: "Сон 7–8 часов", emoji: "😴" }
+    ];
+    const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+    const DAY_NAMES = { mon: 'ПН', tue: 'ВТ', wed: 'СР', thu: 'ЧТ', fri: 'ПТ', sat: 'СБ', sun: 'ВС' };
+    
+    // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====================
+    let currentUser = null;
+    let authToken = null;
+    let currentMenu = null;
+    let currentWorkoutDays = null;
+    let currentExercises = null;
+    let checklistData = {};
+    let trialEndsAt = null;
+    let proExpiresAt = null;
+    let isAdmin = false;
+    let isGuest = true;
+    
+    let menuEditMode = false;
+    let exercisesEditMode = false;
+    
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+    let selectedDate = new Date();
+    selectedDate.setHours(0, 0, 0, 0);
+    
+    function escapeHtml(s) { return String(s).replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+    
+    function canEdit() {
+        if (isGuest) return true;
+        if (isAdmin) return true;
+        if (proExpiresAt && new Date() < new Date(proExpiresAt)) return true;
+        if (trialEndsAt && new Date() < new Date(trialEndsAt)) return true;
+        return false;
+    }
+    
+    function getSubscriptionStatus() {
+        if (isAdmin) return { type: 'admin', daysLeft: Infinity };
+        if (proExpiresAt && new Date() < new Date(proExpiresAt)) {
+            const days = Math.ceil((new Date(proExpiresAt) - new Date()) / (1000 * 60 * 60 * 24));
+            return { type: 'pro', daysLeft: days };
+        }
+        if (trialEndsAt && new Date() < new Date(trialEndsAt)) {
+            const days = Math.ceil((new Date(trialEndsAt) - new Date()) / (1000 * 60 * 60 * 24));
+            return { type: 'trial', daysLeft: days };
+        }
+        if (currentUser && !isGuest) return { type: 'expired', daysLeft: 0 };
+        return { type: 'guest', daysLeft: null };
+    }
+    
+    function saveLocalData() {
+        if (isGuest) {
+            localStorage.setItem('fitness_guest_menu', JSON.stringify(currentMenu));
+            localStorage.setItem('fitness_guest_workout_days', JSON.stringify(currentWorkoutDays));
+            localStorage.setItem('fitness_guest_exercises', JSON.stringify(currentExercises));
+            localStorage.setItem('fitness_guest_checklist', JSON.stringify(checklistData));
+        }
+    }
+    
+    function loadLocalData() {
+        const savedMenu = localStorage.getItem('fitness_guest_menu');
+        const savedWorkout = localStorage.getItem('fitness_guest_workout_days');
+        const savedExercises = localStorage.getItem('fitness_guest_exercises');
+        const savedChecklist = localStorage.getItem('fitness_guest_checklist');
+        if (savedMenu) currentMenu = JSON.parse(savedMenu);
+        if (savedWorkout) currentWorkoutDays = JSON.parse(savedWorkout);
+        if (savedExercises) currentExercises = JSON.parse(savedExercises);
+        if (savedChecklist) checklistData = JSON.parse(savedChecklist);
+        if (!currentMenu) currentMenu = JSON.parse(JSON.stringify(DEFAULT_MENU));
+        if (!currentWorkoutDays) currentWorkoutDays = JSON.parse(JSON.stringify(DEFAULT_WORKOUT_DAYS));
+        if (!currentExercises) currentExercises = JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
+        if (!checklistData) checklistData = {};
+    }
+    
+    async function apiRequest(endpoint, method, data) {
+        const headers = { 'Content-Type': 'application/json' };
+        if (authToken && !isAdmin) headers['Authorization'] = `Bearer ${authToken}`;
+        try {
+            const response = await fetch(`${API_URL}${endpoint}`, { method, headers, body: data ? JSON.stringify(data) : undefined });
+            return await response.json();
+        } catch { return {}; }
+    }
+    
+    async function registerUser(email, password, name, surname, age, weight) {
+        return await apiRequest('/api/register', 'POST', { email, password, name, surname, age, weight });
+    }
+    
+    async function loginUser(email, password) {
+        if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+            isAdmin = true; isGuest = false;
+            currentUser = { name: 'Admin', surname: '', email: ADMIN_EMAIL, subscription: 'pro' };
+            authToken = 'admin_token';
+            proExpiresAt = null;
+            localStorage.setItem('fitness_auth_token', authToken);
+            localStorage.setItem('fitness_user', JSON.stringify(currentUser));
+            localStorage.setItem('fitness_is_admin', 'true');
+            localStorage.removeItem('fitness_guest_menu');
+            localStorage.removeItem('fitness_guest_workout_days');
+            localStorage.removeItem('fitness_guest_exercises');
+            localStorage.removeItem('fitness_guest_checklist');
+            currentMenu = JSON.parse(JSON.stringify(DEFAULT_MENU));
+            currentWorkoutDays = JSON.parse(JSON.stringify(DEFAULT_WORKOUT_DAYS));
+            currentExercises = JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
+            checklistData = {};
+            renderAll();
+            return { success: true };
+        }
+        const result = await apiRequest('/api/login', 'POST', { email, password });
+        if (result.token) {
+            authToken = result.token;
+            currentUser = result.user;
+            isAdmin = false; isGuest = false;
+            localStorage.setItem('fitness_auth_token', authToken);
+            localStorage.setItem('fitness_user', JSON.stringify(currentUser));
+            localStorage.removeItem('fitness_is_admin');
+            await loadUserData();
+            return { success: true };
+        }
+        return { success: false, error: result.error };
+    }
+    
+    function logoutUser() {
+        currentUser = null; authToken = null; isAdmin = false; isGuest = true;
+        trialEndsAt = null; proExpiresAt = null;
+        localStorage.removeItem('fitness_auth_token');
+        localStorage.removeItem('fitness_user');
+        localStorage.removeItem('fitness_is_admin');
+        loadLocalData();
+        renderAll();
+    }
+    
+    async function loadUserData() {
+        if (!authToken || isAdmin) return;
+        const data = await apiRequest('/api/user/data', 'GET');
+        if (data.menu) currentMenu = data.menu;
+        if (data.workout_days) currentWorkoutDays = data.workout_days;
+        if (data.exercises) currentExercises = data.exercises;
+        if (data.checklist) checklistData = data.checklist;
+        if (!currentMenu) currentMenu = JSON.parse(JSON.stringify(DEFAULT_MENU));
+        if (!currentWorkoutDays) currentWorkoutDays = JSON.parse(JSON.stringify(DEFAULT_WORKOUT_DAYS));
+        if (!currentExercises) currentExercises = JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
+        if (!checklistData) checklistData = {};
+        
+        const profile = await apiRequest('/api/user/profile', 'GET');
+        if (profile) {
+            if (profile.created_at && !profile.pro_expires_at) {
+                const createdAt = new Date(profile.created_at);
+                trialEndsAt = new Date(createdAt.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000).toISOString();
+            }
+            if (profile.pro_expires_at) {
+                proExpiresAt = profile.pro_expires_at;
+                trialEndsAt = null;
+            }
+        }
+        renderAll();
+    }
+    
+    async function saveAllDataToServer() {
+        if (!authToken || isAdmin || isGuest) return;
+        await apiRequest('/api/user/data', 'POST', { menu: currentMenu, workout_days: currentWorkoutDays, exercises: currentExercises, checklist: checklistData });
+    }
+    
+    function upgradeToPro() {
+        const modal = document.createElement('div'); modal.className = 'modal';
+        const endDate = new Date();
+        endDate.setDate(endDate.getDate() + PRO_DAYS);
+        modal.innerHTML = `<div class="modal-content"><h2>⭐ Оформление PRO подписки</h2><p>Доступ ко всем функциям редактирования на <strong>1 год</strong>.</p><div class="price">💰 ${PRO_PRICE} ₽</div><p>После оплаты вы получите доступ к редактированию меню и тренировок.</p><button id="payConfirmBtn" style="background:#ff9800;">💳 Оплатить ${PRO_PRICE} ₽</button><button class="close-btn" id="closePayBtn">Отмена</button></div>`;
+        document.body.appendChild(modal);
+        document.getElementById('payConfirmBtn').onclick = async () => {
+            alert(`🚀 Демо-режим: оплата ${PRO_PRICE} ₽ прошла успешно!\nPRO подписка активирована до ${endDate.toLocaleDateString()}`);
+            if (!isGuest && currentUser) {
+                await apiRequest('/api/upgrade-pro', 'POST', { expires_at: endDate.toISOString() });
+                proExpiresAt = endDate.toISOString();
+                trialEndsAt = null;
+                if (currentUser) currentUser.subscription = 'pro';
+                saveAllDataToServer();
+            }
+            modal.remove();
+            renderAll();
+        };
+        document.getElementById('closePayBtn').onclick = () => modal.remove();
+    }
+    
+    // МЕНЮ
+    function toggleWorkoutDay(day) {
+        if (!canEdit()) { upgradeToPro(); return; }
+        currentWorkoutDays[day] = !currentWorkoutDays[day];
+        if (!isGuest && !isAdmin) saveAllDataToServer();
+        else saveLocalData();
+        renderMenuTable();
+    }
+    
+    function renderMenuTable() {
+        const container = document.getElementById('menuContainer');
+        if (!container) return;
+        let html = '<table class="menu-table"><thead> caption<th>День</th><th>Завтрак</th><th>Обед</th><th>Перекус</th><th>Ужин</th><th style="width:60px;">🏋️</th> </thead><tbody>';
+        for (let day of DAYS) {
+            const d = currentMenu[day];
+            if (menuEditMode && canEdit()) {
+                html += `<tr>
+                            <td class="meal-title" style="font-weight:bold;background:#eef5ea;">${DAY_NAMES[day]}</td>
+                            <td><textarea class="menu-input" data-day="${day}" data-meal="breakfast" rows="3">${escapeHtml(d.breakfast)}</textarea></td>
+                            <td><textarea class="menu-input" data-day="${day}" data-meal="lunch" rows="3">${escapeHtml(d.lunch)}</textarea></td>
+                            <td><textarea class="menu-input" data-day="${day}" data-meal="snack" rows="2">${escapeHtml(d.snack)}</textarea></td>
+                            <td><textarea class="menu-input" data-day="${day}" data-meal="dinner" rows="3">${escapeHtml(d.dinner)}</textarea></td>
+                            <td style="text-align:center;"><div class="workout-circle ${currentWorkoutDays[day] ? 'active' : ''}" data-day="${day}"></div></td>
+                         </tr>`;
+            } else {
+                html += `<tr>
+                            <td class="meal-title" style="font-weight:bold;background:#eef5ea;">${DAY_NAMES[day]}</td>
+                            <td style="white-space:pre-line;">${escapeHtml(d.breakfast)}</td>
+                            <td style="white-space:pre-line;">${escapeHtml(d.lunch)}</td>
+                            <td style="white-space:pre-line;">${escapeHtml(d.snack)}</td>
+                            <td style="white-space:pre-line;">${escapeHtml(d.dinner)}</td>
+                            <td style="text-align:center;"><div class="workout-circle ${currentWorkoutDays[day] ? 'active' : ''}" data-day="${day}"></div></td>
+                         </tr>`;
+            }
+        }
+        html += '</tbody> </table>';
+        container.innerHTML = html;
+        document.querySelectorAll('.workout-circle').forEach(c => c.addEventListener('click', (e) => { e.stopPropagation(); toggleWorkoutDay(c.getAttribute('data-day')); }));
+        if (menuEditMode && canEdit()) {
+            document.querySelectorAll('.menu-input').forEach(inp => inp.addEventListener('change', function () {
+                const day = this.getAttribute('data-day');
+                const meal = this.getAttribute('data-meal');
+                if (currentMenu[day] && currentMenu[day][meal] !== undefined) {
+                    currentMenu[day][meal] = this.value;
+                    if (!isGuest && !isAdmin) saveAllDataToServer();
+                    else saveLocalData();
+                }
+            }));
+        }
+    }
+    
+    // УПРАЖНЕНИЯ
+    function addExerciseRow(day) {
+        if (!canEdit()) { upgradeToPro(); return; }
+        if (!currentExercises[day]) currentExercises[day] = { title: `${DAY_NAMES[day]} — тренировка`, exercises: [] };
+        currentExercises[day].exercises.push({ name: "Новое упражнение", weight: "—", sets: "3", reps: "10" });
+        if (!isGuest && !isAdmin) saveAllDataToServer();
+        else saveLocalData();
+        renderExercisesTable();
+    }
+    
+    function deleteExerciseRow(day, idx) {
+        if (!canEdit()) { upgradeToPro(); return; }
+        if (currentExercises[day] && currentExercises[day].exercises[idx]) {
+            currentExercises[day].exercises.splice(idx, 1);
+            if (!isGuest && !isAdmin) saveAllDataToServer();
+            else saveLocalData();
+            renderExercisesTable();
+        }
+    }
+    
+    function updateExerciseField(day, idx, field, val) {
+        if (currentExercises[day] && currentExercises[day].exercises[idx]) {
+            currentExercises[day].exercises[idx][field] = val;
+            if (!isGuest && !isAdmin) saveAllDataToServer();
+            else saveLocalData();
+        }
+    }
+    
+    function updateDayTitle(day, val) {
+        if (currentExercises[day]) {
+            currentExercises[day].title = val;
+            if (!isGuest && !isAdmin) saveAllDataToServer();
+            else saveLocalData();
+        }
+    }
+    
+    function renderExercisesTable() {
+        const container = document.getElementById('exercisesContainer');
+        if (!container) return;
+        let html = '';
+        for (let day of DAYS) {
+            const ed = currentExercises[day] || { title: `${DAY_NAMES[day]} — день отдыха`, exercises: [] };
+            const isRest = ed.exercises.length === 0 && ed.title.includes('отдых');
+            html += `<div style="margin-bottom:28px;border:1px solid #ddecd6;border-radius:20px;padding:12px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                            ${exercisesEditMode && canEdit() ? `<input type="text" class="menu-input" style="font-weight:bold;font-size:1rem;width:auto;flex:2;" value="${escapeHtml(ed.title)}" data-day-title="${day}">` : `<h3 style="color:#1f5420;">📌 ${escapeHtml(ed.title)} ${isRest ? '<span class="rest-day-badge">🚫 день отдыха</span>' : ''}</h3>`}
+                        </div>
+                        <table class="exercise-table">
+                            <thead>
+                                <tr><th>Упражнение</th><th>Вес (кг)</th><th>Подходы</th><th>Повторы</th>${exercisesEditMode && canEdit() ? '<th style="width:50px;"></th>' : ''}</tr>
+                            </thead>
+                            <tbody>`;
+            if (ed.exercises.length === 0) {
+                html += `<tr><td colspan="5" style="text-align:center;color:#b97f10;padding:20px;">🚫 День отдыха (можно добавить упражнения в режиме редактирования)</td></tr>`;
+            } else {
+                for (let i = 0; i < ed.exercises.length; i++) {
+                    const ex = ed.exercises[i];
+                    if (exercisesEditMode && canEdit()) {
+                        html += `<tr>
+                                    <td><input class="exercise-input" value="${escapeHtml(ex.name)}" data-day="${day}" data-idx="${i}" data-field="name"></td>
+                                    <td><input class="exercise-input" style="width:80px;" value="${escapeHtml(ex.weight)}" data-day="${day}" data-idx="${i}" data-field="weight"></td>
+                                    <td><input class="exercise-input" style="width:70px;" value="${escapeHtml(ex.sets)}" data-day="${day}" data-idx="${i}" data-field="sets"></td>
+                                    <td><input class="exercise-input" style="width:90px;" value="${escapeHtml(ex.reps)}" data-day="${day}" data-idx="${i}" data-field="reps"></td>
+                                    <td><button class="delete-row-btn" data-day="${day}" data-idx="${i}">🗑</button></td>
+                                 </tr>`;
+                    } else {
+                        html += `<tr>
+                                    <td style="white-space:pre-line;">${escapeHtml(ex.name)}</td>
+                                    <td>${escapeHtml(ex.weight)}</td>
+                                    <td>${escapeHtml(ex.sets)}</td>
+                                    <td>${escapeHtml(ex.reps)}</td>
+                                 </tr>`;
+                    }
+                }
+            }
+            html += `</tbody>
+                     </table>`;
+            if (exercisesEditMode && canEdit()) {
+                html += `<div style="margin-top:8px;"><button class="add-row-btn" data-day="${day}">+ Добавить упражнение</button></div>`;
+            }
+            html += `</div>`;
+        }
+        container.innerHTML = html;
+        if (exercisesEditMode && canEdit()) {
+            document.querySelectorAll('[data-day-title]').forEach(i => i.addEventListener('change', e => updateDayTitle(i.getAttribute('data-day-title'), i.value)));
+            document.querySelectorAll('.exercise-input').forEach(i => i.addEventListener('change', e => { const day = i.getAttribute('data-day'), idx = parseInt(i.getAttribute('data-idx')), field = i.getAttribute('data-field'); updateExerciseField(day, idx, field, i.value); }));
+            document.querySelectorAll('.delete-row-btn').forEach(b => b.addEventListener('click', e => { const day = b.getAttribute('data-day'), idx = parseInt(b.getAttribute('data-idx')); deleteExerciseRow(day, idx); }));
+            document.querySelectorAll('.add-row-btn').forEach(b => b.addEventListener('click', e => addExerciseRow(b.getAttribute('data-day'))));
+        }
+    }
+    
+    // ЧЕК-ЛИСТ (календарь)
+    function getDateKey(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+    function getDayData(date) { let k = getDateKey(date); if (!checklistData[k]) checklistData[k] = {}; return checklistData[k]; }
+    function setItemChecked(date, id, checked) { let d = getDayData(date); if (checked) d[id] = true; else delete d[id]; if (!isGuest && !isAdmin) saveAllDataToServer(); else saveLocalData(); renderChecklistForDate(date); renderCalendar(); updateWeekProgress(date); }
+    function getDayCompletion(date) { let d = getDayData(date); let c = 0; for (let i of CHECK_ITEMS) if (d[i.id]) c++; return c; }
+    
+    function renderChecklistForDate(date) {
+        let d = getDayData(date), container = document.getElementById('checklistItems'); if (!container) return;
+        document.getElementById('selectedDateTitle').innerHTML = `📌 ${date.getDate()} ${date.toLocaleString('ru', { month: 'long' })}, ${date.toLocaleString('ru', { weekday: 'long' })}`;
+        let html = ''; for (let i of CHECK_ITEMS) { let ch = !!d[i.id]; html += `<div class="check-item"><div><span style="font-size:1.2rem;margin-right:8px;">${i.emoji}</span>${i.label}</div><div class="check-toggle ${ch ? 'done' : ''}" data-item="${i.id}">${ch ? '✓' : '○'}</div></div>`; }
+        container.innerHTML = html;
+        document.querySelectorAll('.check-toggle').forEach(el => el.addEventListener('click', () => { let id = el.getAttribute('data-item'), was = el.classList.contains('done'); setItemChecked(date, id, !was); }));
+        document.getElementById('dayStats').innerHTML = `✅ выполнено ${getDayCompletion(date)} из ${CHECK_ITEMS.length}`;
+    }
+    
+    function getWeekRange(date) { let d = new Date(date), dow = d.getDay(), moff = dow === 0 ? -6 : 1 - dow, m = new Date(d); m.setDate(d.getDate() + moff); let s = new Date(m); s.setDate(m.getDate() + 6); return { start: m, end: s }; }
+    function updateWeekProgress(d) { let { start, end } = getWeekRange(d); let total = 0, done = 0, cur = new Date(start); while (cur <= end) { let dd = checklistData[getDateKey(cur)] || {}; for (let i of CHECK_ITEMS) { total++; if (dd[i.id]) done++; } cur.setDate(cur.getDate() + 1); } let p = total === 0 ? 0 : Math.round(done / total * 100); document.getElementById('weekProgress').innerHTML = `📅 неделя: ${p}% (${done}/${total})`; }
+    
+    function renderCalendar() {
+        let first = new Date(currentYear, currentMonth, 1), start = first.getDay(), offset = start === 0 ? 6 : start - 1, days = new Date(currentYear, currentMonth + 1, 0).getDate(), prev = new Date(currentYear, currentMonth, 0).getDate(), grid = document.getElementById('calendarGrid'); grid.innerHTML = ''; let today = new Date(); today.setHours(0, 0, 0, 0);
+        for (let i = 0; i < 42; i++) {
+            let dayNum, dateObj, isCurr = true;
+            if (i < offset) { let d = prev - (offset - i) + 1; dateObj = new Date(currentYear, currentMonth - 1, d); dayNum = d; isCurr = false; }
+            else if (i >= offset + days) { let d = i - (offset + days) + 1; dateObj = new Date(currentYear, currentMonth + 1, d); dayNum = d; isCurr = false; }
+            else { dayNum = i - offset + 1; dateObj = new Date(currentYear, currentMonth, dayNum); isCurr = true; }
+            let sel = dateObj.toDateString() === selectedDate.toDateString(), istoday = dateObj.toDateString() === today.toDateString(), compl = getDayCompletion(dateObj), hint = (compl === CHECK_ITEMS.length && isCurr) ? '✨' : (compl > 0 && isCurr) ? '●' : '';
+            let cell = document.createElement('div'); cell.className = `day-cell ${!isCurr ? 'other-month' : ''} ${sel ? 'selected' : ''} ${istoday ? 'today' : ''}`;
+            cell.innerHTML = `<div>${dayNum}</div><div style="font-size:9px;">${hint}</div>`;
+            cell.addEventListener('click', () => { selectedDate = new Date(dateObj); renderCalendar(); renderChecklistForDate(selectedDate); updateWeekProgress(selectedDate); });
+            grid.appendChild(cell);
+        }
+        let months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+        document.getElementById('monthYearDisplay').innerText = `${months[currentMonth]} ${currentYear}`;
+    }
+    
+    function changeMonth(delta) { let nm = currentMonth + delta, ny = currentYear; if (nm < 0) { nm = 11; ny--; } if (nm > 11) { nm = 0; ny++; } currentYear = ny; currentMonth = nm; let ns = new Date(selectedDate); ns.setFullYear(currentYear, currentMonth, Math.min(selectedDate.getDate(), new Date(currentYear, currentMonth + 1, 0).getDate())); selectedDate = ns; renderCalendar(); renderChecklistForDate(selectedDate); updateWeekProgress(selectedDate); }
+    function resetWeek() { if (!confirm('Сбросить отметки за неделю?')) return; let { start, end } = getWeekRange(selectedDate); let cur = new Date(start); while (cur <= end) { let key = getDateKey(cur); if (checklistData[key]) { for (let i of CHECK_ITEMS) delete checklistData[key][i.id]; if (Object.keys(checklistData[key]).length === 0) delete checklistData[key]; } cur.setDate(cur.getDate() + 1); } if (!isGuest && !isAdmin) saveAllDataToServer(); else saveLocalData(); renderCalendar(); renderChecklistForDate(selectedDate); updateWeekProgress(selectedDate); }
+    
+    // UI
+    function renderUserArea() {
+        const container = document.getElementById('userArea');
+        const status = getSubscriptionStatus();
+        if (currentUser || isAdmin) {
+            const name = isAdmin ? 'Admin' : (currentUser?.name || 'User');
+            const initials = (name?.[0] || 'U').toUpperCase();
+            let badge = '';
+            if (isAdmin) badge = '<span class="admin-badge">👑 Админ</span>';
+            else if (status.type === 'pro') badge = `<span class="pro-badge">⭐ PRO до ${Math.ceil(status.daysLeft)} дн.</span>`;
+            else if (status.type === 'trial') badge = `<span class="trial-badge">🔥 триал ${status.daysLeft} дн.</span>`;
+            else if (status.type === 'expired') badge = '<span class="expired-badge">⚠️ доступ закончился</span>';
+            container.innerHTML = `<div class="user-menu" style="position:relative;"><button class="avatar-btn" id="avatarBtn">${initials}</button><div class="dropdown" id="userDropdown"><div class="dropdown-item" id="profileBtn">👤 Мой профиль</div>${status.type !== 'pro' && !isAdmin && status.type !== 'admin' ? '<div class="dropdown-item" id="upgradeBtn">⭐ Оформить PRO (300₽/год)</div>' : ''}<div class="dropdown-item" id="logoutBtn">🚪 Выйти</div></div></div>${badge}`;
+            document.getElementById('avatarBtn')?.addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('userDropdown').classList.toggle('show'); });
+            document.getElementById('profileBtn')?.addEventListener('click', showProfileModal);
+            if (document.getElementById('upgradeBtn')) document.getElementById('upgradeBtn')?.addEventListener('click', upgradeToPro);
+            document.getElementById('logoutBtn')?.addEventListener('click', logoutUser);
+            document.addEventListener('click', () => { const d = document.getElementById('userDropdown'); if (d) d.classList.remove('show'); });
+        } else {
+            container.innerHTML = `<button class="login-btn" id="loginBtn">🔐 Войти / Регистрация</button><span class="guest-badge">👤 гость</span>`;
+            document.getElementById('loginBtn')?.addEventListener('click', showAuthModal);
+        }
+    }
+    
+    function showAuthModal() {
+        const modal = document.createElement('div'); modal.className = 'modal';
+        modal.innerHTML = `<div class="modal-content"><h2>Вход / Регистрация</h2>
+                            <div class="auth-tabs"><div id="loginTabBtn" class="auth-tab" style="background:#2e7d32;color:white;">Вход</div><div id="registerTabBtn" class="auth-tab" style="background:#e1efdc;">Регистрация</div></div>
+                            <div id="loginForm"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPassword" placeholder="Пароль"><button id="loginSubmitBtn">Войти</button><div class="note-text" style="margin-top:8px;">👑 Админ: admin@fitness.ru / admin123</div></div>
+                            <div id="registerForm" style="display:none;"><input type="text" id="regName" placeholder="Имя"><input type="text" id="regSurname" placeholder="Фамилия"><input type="number" id="regAge" placeholder="Возраст"><input type="number" id="regWeight" placeholder="Вес (кг)"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPassword" placeholder="Пароль (мин. 6 символов)"><input type="password" id="regConfirmPassword" placeholder="Подтвердите пароль"><button id="registerSubmitBtn">Зарегистрироваться</button></div>
+                            <button class="close-btn" id="closeModalBtn">Закрыть</button></div>`;
+        document.body.appendChild(modal);
+        const loginTab = document.getElementById('loginTabBtn'), registerTab = document.getElementById('registerTabBtn'), loginForm = document.getElementById('loginForm'), registerForm = document.getElementById('registerForm');
+        loginTab.onclick = () => { loginTab.style.background = '#2e7d32'; loginTab.style.color = 'white'; registerTab.style.background = '#e1efdc'; registerTab.style.color = '#2a6428'; loginForm.style.display = 'block'; registerForm.style.display = 'none'; };
+        registerTab.onclick = () => { registerTab.style.background = '#2e7d32'; registerTab.style.color = 'white'; loginTab.style.background = '#e1efdc'; loginTab.style.color = '#2a6428'; loginForm.style.display = 'none'; registerForm.style.display = 'block'; };
+        document.getElementById('loginSubmitBtn').onclick = async () => { const res = await loginUser(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); if (res.success) { modal.remove(); location.reload(); } else alert(res.error); };
+        document.getElementById('registerSubmitBtn').onclick = async () => { const name = document.getElementById('regName').value, surname = document.getElementById('regSurname').value, age = document.getElementById('regAge').value, weight = document.getElementById('regWeight').value, email = document.getElementById('regEmail').value, pwd = document.getElementById('regPassword').value, confirm = document.getElementById('regConfirmPassword').value; if (!name || !surname || !age || !weight || !email || !pwd) { alert('Заполните все поля'); return; } if (pwd.length < 6) { alert('Пароль минимум 6 символов'); return; } if (pwd !== confirm) { alert('Пароли не совпадают'); return; } const res = await registerUser(email, pwd, name, surname, age, weight); if (res.success) { alert('Регистрация успешна! Теперь войдите.'); loginTab.click(); } else alert(res.error || 'Ошибка регистрации'); };
+        document.getElementById('closeModalBtn').onclick = () => modal.remove();
+    }
+    
+    function showProfileModal() {
+        const status = getSubscriptionStatus();
+        let statusText = '';
+        if (isAdmin) statusText = '👑 Администратор (бессрочный доступ)';
+        else if (status.type === 'pro') statusText = `⭐ PRO подписка активна до ${new Date(proExpiresAt).toLocaleDateString()} (осталось ${status.daysLeft} дн.)`;
+        else if (status.type === 'trial') statusText = `🔥 Бесплатный триал (осталось ${status.daysLeft} дн.)`;
+        else if (status.type === 'expired') statusText = '⚠️ Доступ к редактированию закончился. Оформите PRO подписку.';
+        else statusText = '👤 Гостевой режим (данные хранятся локально)';
+        
+        const modal = document.createElement('div'); modal.className = 'modal';
+        modal.innerHTML = `<div class="modal-content"><h2>Мой профиль</h2>
+                            <p><strong>Имя:</strong> ${isAdmin ? 'Admin' : (currentUser?.name || 'Гость')} ${isAdmin ? '' : (currentUser?.surname || '')}</p>
+                            <p><strong>Email:</strong> ${isAdmin ? ADMIN_EMAIL : (currentUser?.email || 'не авторизован')}</p>
+                            <p><strong>Статус:</strong> ${statusText}</p>
+                            ${!isGuest && !isAdmin && status.type !== 'pro' ? '<button id="upgradeProfileBtn" style="background:#ff9800;">⭐ Оформить PRO (300₽/год)</button>' : ''}
+                            <button class="close-btn" id="closeProfileBtn">Закрыть</button></div>`;
+        document.body.appendChild(modal);
+        if (document.getElementById('upgradeProfileBtn')) document.getElementById('upgradeProfileBtn').onclick = () => { modal.remove(); upgradeToPro(); };
+        document.getElementById('closeProfileBtn').onclick = () => modal.remove();
+    }
+    
+    function renderAll() {
+        renderMenuTable();
+        renderExercisesTable();
+        renderCalendar();
+        renderChecklistForDate(selectedDate);
+        updateWeekProgress(selectedDate);
+        renderUserArea();
+        const can = canEdit();
+        document.getElementById('menuEditBar').classList.toggle('disabled', !can);
+        document.getElementById('exercisesEditBar').classList.toggle('disabled', !can);
+        document.getElementById('menuUpgradeMsg').style.display = can ? 'none' : 'block';
+        document.getElementById('exercisesUpgradeMsg').style.display = can ? 'none' : 'block';
+    }
+    
+    async function init() {
+        const savedToken = localStorage.getItem('fitness_auth_token');
+        const savedUser = localStorage.getItem('fitness_user');
+        const savedIsAdmin = localStorage.getItem('fitness_is_admin');
+        if (savedIsAdmin === 'true') {
+            isAdmin = true; isGuest = false;
+            currentUser = { name: 'Admin', surname: '', email: ADMIN_EMAIL, subscription: 'pro' };
+            authToken = 'admin_token';
+            currentMenu = JSON.parse(JSON.stringify(DEFAULT_MENU));
+            currentWorkoutDays = JSON.parse(JSON.stringify(DEFAULT_WORKOUT_DAYS));
+            currentExercises = JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
+            checklistData = {};
+        } else if (savedToken && savedUser) {
+            authToken = savedToken;
+            currentUser = JSON.parse(savedUser);
+            isAdmin = false; isGuest = false;
+            await loadUserData();
+        } else {
+            isGuest = true;
+            loadLocalData();
+        }
+        renderAll();
+        document.getElementById('prevMonthBtn')?.addEventListener('click', () => changeMonth(-1));
+        document.getElementById('nextMonthBtn')?.addEventListener('click', () => changeMonth(1));
+        document.getElementById('resetWeekBtn')?.addEventListener('click', resetWeek);
+        document.getElementById('editMenuBtn')?.addEventListener('click', () => { if (canEdit()) { menuEditMode = true; document.getElementById('editMenuBtn').style.display = 'none'; document.getElementById('saveMenuBtn').style.display = 'inline-block'; document.getElementById('resetMenuBtn').style.display = 'inline-block'; renderMenuTable(); } else upgradeToPro(); });
+        document.getElementById('saveMenuBtn')?.addEventListener('click', () => { menuEditMode = false; document.getElementById('editMenuBtn').style.display = 'inline-block'; document.getElementById('saveMenuBtn').style.display = 'none'; document.getElementById('resetMenuBtn').style.display = 'none'; if (!isGuest && !isAdmin) saveAllDataToServer(); else saveLocalData(); renderMenuTable(); });
+        document.getElementById('resetMenuBtn')?.addEventListener('click', () => { currentMenu = JSON.parse(JSON.stringify(DEFAULT_MENU)); currentWorkoutDays = JSON.parse(JSON.stringify(DEFAULT_WORKOUT_DAYS)); if (!isGuest && !isAdmin) saveAllDataToServer(); else saveLocalData(); if (menuEditMode) { menuEditMode = false; document.getElementById('editMenuBtn').style.display = 'inline-block'; document.getElementById('saveMenuBtn').style.display = 'none'; document.getElementById('resetMenuBtn').style.display = 'none'; } renderMenuTable(); });
+        document.getElementById('editExercisesBtn')?.addEventListener('click', () => { if (canEdit()) { exercisesEditMode = true; document.getElementById('editExercisesBtn').style.display = 'none'; document.getElementById('saveExercisesBtn').style.display = 'inline-block'; document.getElementById('resetExercisesBtn').style.display = 'inline-block'; renderExercisesTable(); } else upgradeToPro(); });
+        document.getElementById('saveExercisesBtn')?.addEventListener('click', () => { exercisesEditMode = false; document.getElementById('editExercisesBtn').style.display = 'inline-block'; document.getElementById('saveExercisesBtn').style.display = 'none'; document.getElementById('resetExercisesBtn').style.display = 'none'; if (!isGuest && !isAdmin) saveAllDataToServer(); else saveLocalData(); renderExercisesTable(); });
+        document.getElementById('resetExercisesBtn')?.addEventListener('click', () => { currentExercises = JSON.parse(JSON.stringify(DEFAULT_EXERCISES)); if (!isGuest && !isAdmin) saveAllDataToServer(); else saveLocalData(); if (exercisesEditMode) { exercisesEditMode = false; document.getElementById('editExercisesBtn').style.display = 'inline-block'; document.getElementById('saveExercisesBtn').style.display = 'none'; document.getElementById('resetExercisesBtn').style.display = 'none'; } renderExercisesTable(); });
+        document.getElementById('upgradeFromMenuBtn')?.addEventListener('click', upgradeToPro);
+        document.getElementById('upgradeFromExercisesBtn')?.addEventListener('click', upgradeToPro);
+        const tabs = document.querySelectorAll('.tab-btn'), conts = { checklist: document.getElementById('tab-checklist'), menu: document.getElementById('tab-menu'), exercises: document.getElementById('tab-exercises') };
+        tabs.forEach(b => b.addEventListener('click', () => { const id = b.getAttribute('data-tab'); tabs.forEach(t => t.classList.remove('active')); b.classList.add('active'); Object.keys(conts).forEach(k => conts[k].classList.remove('active')); conts[id].classList.add('active'); if (id === 'menu') renderMenuTable(); if (id === 'exercises') renderExercisesTable(); }));
+    }
+    init();
+</script>
+</body>
+</html>
