@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#2e7d32">
+    <meta name="description" content="Фитнес-помощник: чек-лист привычек, меню на неделю, программа тренировок. Устанавливайте на телефон для удобного отслеживания прогресса.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Фитнес-помощник">
+    
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232e7d32'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E💪%3C/text%3E%3C/svg%3E">
+    
+    <title>Фитнес-помощник</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            background: #e5f0e2;
+            padding: 16px 12px 40px;
+            color: #1d3e1a;
+        }
+        .app {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 36px;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+            overflow: hidden;
+            padding: 18px 16px 24px;
+        }
+        h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #1f6e1c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .sub {
+            color: #5a7856;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            border-left: 3px solid #9acd8c;
+            padding-left: 10px;
+        }
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .install-btn {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: #f0f7ed;
+            padding: 6px;
+            border-radius: 60px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px 0;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #446d3e;
+        }
+        .tab-btn.active {
+            background: #2e7d32;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .tab-content {
+            display: none;
+            animation: fade 0.2s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(6px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .menu-table, .exercise-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            background: #fefef9;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .menu-table th, .exercise-table th {
+            background: #2e7d32;
+            color: white;
+            padding: 10px 6px;
+            font-size: 12px;
+            border: 1px solid #479c46;
+        }
+        .menu-table td, .exercise-table td {
+            border: 1px solid #cde2c6;
+            padding: 8px 6px;
+            vertical-align: top;
+            background: white;
+        }
+        .meal-title, .day-title {
+            font-weight: 700;
+            background: #eef5ea;
+        }
+        .week-grid {
+            overflow-x: auto;
+        }
+        .note-text {
+            font-size: 10px;
+            color: #6e7c68;
+            margin-top: 8px;
+        }
+        .edit-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .edit-btn {
+            background: #e1efdc;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #2a6428;
+        }
+        .edit-btn.primary {
+            background: #2e7d32;
+            color: white;
+        }
+        .menu-input {
+            width: 100%;
+            padding: 6px;
+            font-size: 11px;
+            border: 1px solid #c2dbbd;
+            border-radius: 12px;
+            background: white;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .workout-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #e8f0e5;
+            border: 2px solid #8bbd7a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        .workout-circle.active {
+            background: #2e7d32;
+            border-color: #2e7d32;
+            color: white;
+        }
+        .workout-circle.active::after {
+            content: "✓";
+        }
+        .workout-circle:not(.active)::after {
+            content: "○";
+            color: #8bbd7a;
+            font-size: 20px;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 16px 0 12px;
+        }
+        .month-year {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: #eff7ec;
+            padding: 6px 16px;
+            border-radius: 40px;
+        }
+        .nav-btn {
+            background: #e1efdc;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 38px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.7rem;
+            margin-bottom: 6px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .day-cell {
+            background: #f9fcf7;
+            border-radius: 40px;
+            text-align: center;
+            padding: 8px 2px;
+            font-size: 0.8rem;
+            border: 1px solid #ddecd6;
+            cursor: pointer;
+        }
+        .day-cell.selected {
+            background: #2e7d32;
+            color: white;
+        }
+        .day-cell.today {
+            border: 2px solid #ffb74d;
+        }
+        .checklist-panel {
+            background: #fefef7;
+            border-radius: 28px;
+            padding: 16px;
+            border: 1px solid #d9e8d2;
+        }
+        .check-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2eedb;
+        }
+        .check-toggle {
+            width: 28px;
+            height: 28px;
+            border-radius: 30px;
+            border: 2px solid #8bbd7a;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .check-toggle.done {
+            background: #2e7d32;
+            color: white;
+            border-color: #2e7d32;
+        }
+        .stats-row {
+            background: #eef5ea;
+            border-radius: 24px;
+            padding: 10px;
+            margin-top: 14px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        .reset-stats {
+            background: #f5e6d3;
+            border-radius: 30px;
+            padding: 6px;
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 12px;
+            cursor: pointer;
+        }
+        .rest-day-badge {
+            background: #f9e0b0;
+            color: #b97f10;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            display: inline-block;
+        }
+        .exercise-input {
+            width: 100%;
+            padding: 6px;
+            font-size: 11px;
+            border: 1px solid #c2dbbd;
+            border-radius: 12px;
+            background: white;
+            font-family: inherit;
+        }
+        .add-row-btn {
+            background: #e1efdc;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+        .delete-row-btn {
+            background: #ffe0d0;
+            border: none;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            cursor: pointer;
+            color: #b33;
+        }
+        .donation-banner {
+            background: #fff3e0;
+            border-radius: 24px;
+            padding: 12px 16px;
+            margin-top: 24px;
+            text-align: center;
+            border: 1px solid #ffe0b5;
+        }
+        .donation-btn {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        @media (max-width: 700px) {
+            .menu-table td, .menu-table th { font-size: 10px; padding: 6px 3px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="header-row">
+        <h1>🏋️‍♀️ Фитнес-помощник</h1>
+        <button id="installPwaBtn" class="install-btn" style="display: none;">📲 Установить</button>
+    </div>
+    <div class="sub">чек-лист • меню (с тренировками) • упражнения • работает офлайн</div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="checklist">📋 Чек-лист</button>
+        <button class="tab-btn" data-tab="menu">🥗 Меню на неделю ✏️</button>
+        <button class="tab-btn" data-tab="exercises">🏋️ Упражнения</button>
+    </div>
+
+    <div id="tab-checklist" class="tab-content active">
+        <div class="calendar-header">
+            <button class="nav-btn" id="prevMonthBtn">←</button>
+            <span class="month-year" id="monthYearDisplay"></span>
+            <button class="nav-btn" id="nextMonthBtn">→</button>
+        </div>
+        <div class="weekdays"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+        <div class="checklist-panel">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <strong id="selectedDateTitle">—</strong>
+                <span id="weekProgress" style="font-size:11px;">неделя: --%</span>
+            </div>
+            <div id="checklistItems"></div>
+            <div class="stats-row" id="dayStats">✅ выполнено 0 из 9</div>
+            <div id="resetWeekBtn" class="reset-stats">🔄 сбросить отметки за неделю</div>
+        </div>
+    </div>
+
+    <div id="tab-menu" class="tab-content">
+        <div class="edit-bar">
+            <button id="editMenuBtn" class="edit-btn">✏️ Редактировать меню</button>
+            <button id="saveMenuBtn" class="edit-btn primary" style="display:none;">💾 Сохранить</button>
+            <button id="resetMenuBtn" class="edit-btn" style="display:none;">↩️ Сбросить</button>
+        </div>
+        <div id="menuContainer" class="week-grid"></div>
+        <div class="note-text">💡 В режиме редактирования используйте Enter для переноса строк. Кружок 🟢 отмечает дни с тренировкой.</div>
+    </div>
+
+    <div id="tab-exercises" class="tab-content">
+        <div class="edit-bar">
+            <button id="editExercisesBtn" class="edit-btn">✏️ Редактировать программу</button>
+            <button id="saveExercisesBtn" class="edit-btn primary" style="display:none;">💾 Сохранить</button>
+            <button id="resetExercisesBtn" class="edit-btn" style="display:none;">↩️ Сбросить к плану</button>
+        </div>
+        <div id="exercisesContainer"></div>
+        <div class="note-text">💡 В режиме редактирования можно добавлять/удалять строки упражнений для каждого дня.</div>
+    </div>
+    
+    <div class="donation-banner">
+        <span>❤️ Нравится приложение? Поддержите развитие!</span><br>
+        <a href="https://boosty.to/yourpage" target="_blank" class="donation-btn">☕ Поддержать проект</a>
+        <div style="font-size: 10px; margin-top: 6px; color: #b97f10;">Спасибо за вашу поддержку 🙌</div>
+    </div>
+</div>
+
+<script>
+    // ===================== ДАННЫЕ =====================
+    const ORIGINAL_MENU = {
+        mon: { breakfast: "Омлет (2 яйца) + шпинат\n½ авокадо", lunch: "Курица 150г\nгречка 120г\nсалат с 1ч.л. масла", snack: "—", dinner: "Рыба 150г\nтушеные кабачки/цв. капуста 300г\n1ч.л. масла" },
+        tue: { breakfast: "Греч. йогурт 2% 200г\nягоды + мед\n2 яйца", lunch: "Индейка 150г\nкиноа 120г\nовощи-гриль\n1ч.л. масла", snack: "—", dinner: "Творог 5% 180г\nогурец + зелень\n10г орехов" },
+        wed: { breakfast: "Омлет с овощами\n1 тост цельнозерновой", lunch: "Курица 150г\nбулгур 120г\nсалат\n1ч.л. масла", snack: "18:00 яблоко\n10г миндаля", dinner: "20:00 рыба на гриле\nзапеч. овощи 300г\n1ч.л. масла" },
+        thu: { breakfast: "Овсянка 40г\n2 яйца пашот\n½ авокадо", lunch: "Индейка 150г\nгречка 120г\nтушеные овощи\n1ч.л. масла", snack: "17:00 творог 5% 150г\nягоды", dinner: "20:00 курица 150г\nзапеч. овощи\n1ч.л. масла" },
+        fri: { breakfast: "Омлет + шпинат\n½ авокадо", lunch: "Рыба 150г\nкиноа 120г\nсалат\n1ч.л. масла", snack: "—", dinner: "Творог 5% 180г\nогурец + зелень" },
+        sat: { breakfast: "Омлет с грибами\n1 тост", lunch: "Курица 150г\nгречка 120г\nсалат\n1ч.л. масла", snack: "17:00 яблоко\n10г миндаля", dinner: "20:00 рыба на гриле\nзапеч. овощи 300г\n1ч.л. масла" },
+        sun: { breakfast: "Греч. йогурт 2% 200г\nягоды + мед\n1 яйцо", lunch: "Индейка 150г\nкиноа 120г\nовощи-гриль\n1ч.л. масла", snack: "17:00 творог 5% 150г\nягоды", dinner: "20:00 курица 150г\nзапеч. овощи\n1ч.л. масла" }
+    };
+    
+    const DEFAULT_WORKOUT_DAYS = { mon: false, tue: false, wed: true, thu: true, fri: false, sat: true, sun: true };
+    
+    const ORIGINAL_EXERCISES_DATA = {
+        mon: { title: "ПН — день отдыха", exercises: [] },
+        tue: { title: "ВТ — день отдыха", exercises: [] },
+        wed: { title: "СР — отель (руки + плечи + кардио)", exercises: [
+            { name: "Разгибание рук (верхний блок, канат)", weight: "5–7", sets: "4", reps: "12–15" },
+            { name: "Сгибание рук с гантелями сидя", weight: "3–4 (кажд)", sets: "3", reps: "10–12" },
+            { name: "Махи гантелями в стороны", weight: "1–2", sets: "3", reps: "12–15" },
+            { name: "Французский жим с гантелью сидя", weight: "2–3", sets: "3", reps: "12–15 на руку" },
+            { name: "Махи в наклоне (задняя дельта)", weight: "2–3", sets: "3", reps: "12–15" },
+            { name: "Кардио: эллипс/вело", weight: "—", sets: "25 мин", reps: "пульс 110–130" }
+        ] },
+        thu: { title: "ЧТ — зал (верх + спина + пресс + кардио)", exercises: [
+            { name: "Тяга вертикального блока к груди", weight: "15–20", sets: "3", reps: "12–15" },
+            { name: "Тяга горизонтального блока", weight: "15–20", sets: "3", reps: "12–15" },
+            { name: "Отжимания от скамьи спиной", weight: "свой вес", sets: "3", reps: "12–15" },
+            { name: "Сгибание рук на нижнем блоке", weight: "5–7", sets: "3", reps: "12–15" },
+            { name: "Махи гантелями в стороны", weight: "1–2", sets: "3", reps: "12–15" },
+            { name: "Скручивания (руки на груди)", weight: "—", sets: "3", reps: "20" },
+            { name: "Вакуум", weight: "—", sets: "3", reps: "10–15 сек" },
+            { name: "Ходьба дорожка (уклон 5–7)", weight: "—", sets: "30–35 мин", reps: "пульс 110–130" }
+        ] },
+        fri: { title: "ПТ — день отдыха", exercises: [] },
+        sat: { title: "СБ — зал (низ — только тонус + кардио)", exercises: [
+            { name: "Жим ногами (стопы узко/низко)", weight: "30–40", sets: "3", reps: "12–15" },
+            { name: "Разгибание ног сидя", weight: "10–15", sets: "3", reps: "12–15" },
+            { name: "Сгибание ног лежа", weight: "10–15", sets: "3", reps: "12–15" },
+            { name: "Ягодичный мост", weight: "свой вес / 2–4", sets: "3", reps: "15–20" },
+            { name: "Кардио: эллипс/вело", weight: "—", sets: "35 мин", reps: "пульс 110–130" },
+            { name: "Вакуум", weight: "—", sets: "3", reps: "10–15 сек" }
+        ] },
+        sun: { title: "ВС — зал (руки + плечи + кардио)", exercises: [
+            { name: "Разгибание рук (блок, канат)", weight: "5–7", sets: "4", reps: "12–15" },
+            { name: "Сгибание рук с гантелями на наклонной", weight: "3–4", sets: "3", reps: "10–12" },
+            { name: "Французский жим с гантелью", weight: "2–3", sets: "3", reps: "12–15 на руку" },
+            { name: "Махи гантелями в стороны", weight: "1–2", sets: "3", reps: "12–15" },
+            { name: "Махи в наклоне (задняя дельта)", weight: "2–3", sets: "3", reps: "12–15" },
+            { name: "Планка на прямых руках", weight: "—", sets: "3", reps: "60 сек" },
+            { name: "Ходьба дорожка (уклон 5–7)", weight: "—", sets: "30–35 мин", reps: "пульс 110–130" }
+        ] }
+    };
+    
+    const DAYS = ['mon','tue','wed','thu','fri','sat','sun'];
+    const DAY_NAMES = { mon:'ПН', tue:'ВТ', wed:'СР', thu:'ЧТ', fri:'ПТ', sat:'СБ', sun:'ВС' };
+    
+    let currentMenu = JSON.parse(JSON.stringify(ORIGINAL_MENU));
+    let workoutDays = JSON.parse(JSON.stringify(DEFAULT_WORKOUT_DAYS));
+    let currentExercises = JSON.parse(JSON.stringify(ORIGINAL_EXERCISES_DATA));
+    let menuEditMode = false;
+    let exercisesEditMode = false;
+    
+    // ===================== МЕНЮ =====================
+    function loadMenu() {
+        const saved = localStorage.getItem('fitness_custom_menu');
+        if(saved) { try { currentMenu = JSON.parse(saved); } catch(e) {} }
+        const savedWorkouts = localStorage.getItem('fitness_workout_days');
+        if(savedWorkouts) { try { workoutDays = JSON.parse(savedWorkouts); } catch(e) {} }
+        renderMenuTable();
+    }
+    
+    function saveMenu() {
+        localStorage.setItem('fitness_custom_menu', JSON.stringify(currentMenu));
+        localStorage.setItem('fitness_workout_days', JSON.stringify(workoutDays));
+        renderMenuTable();
+    }
+    
+    function resetMenu() {
+        currentMenu = JSON.parse(JSON.stringify(ORIGINAL_MENU));
+        workoutDays = JSON.parse(JSON.stringify(DEFAULT_WORKOUT_DAYS));
+        saveMenu();
+    }
+    
+    function toggleWorkoutDay(dayKey) {
+        workoutDays[dayKey] = !workoutDays[dayKey];
+        localStorage.setItem('fitness_workout_days', JSON.stringify(workoutDays));
+        renderMenuTable();
+    }
+    
+    function renderMenuTable() {
+        const container = document.getElementById('menuContainer');
+        if(!container) return;
+        let html = '<table class="menu-table"><thead><tr><th>День</th><th>Завтрак</th><th>Обед</th><th>Перекус</th><th>Ужин</th><th style="width: 70px;">🏋️ Тренировка</th></tr></thead><tbody>';
+        for(let day of DAYS) {
+            const dayData = currentMenu[day];
+            const isWorkout = workoutDays[day];
+            if(menuEditMode) {
+                html += `<tr>
+                    <td class="meal-title">${DAY_NAMES[day]}</td>
+                    <td><textarea class="menu-input" data-day="${day}" data-meal="breakfast" rows="2">${escapeHtml(dayData.breakfast)}</textarea></td>
+                    <td><textarea class="menu-input" data-day="${day}" data-meal="lunch" rows="2">${escapeHtml(dayData.lunch)}</textarea></td>
+                    <td><textarea class="menu-input" data-day="${day}" data-meal="snack" rows="2">${escapeHtml(dayData.snack)}</textarea></td>
+                    <td><textarea class="menu-input" data-day="${day}" data-meal="dinner" rows="2">${escapeHtml(dayData.dinner)}</textarea></td>
+                    <td style="text-align: center;"><div class="workout-circle ${isWorkout ? 'active' : ''}" data-day="${day}"></div></td>
+                </tr>`;
+            } else {
+                html += `<tr>
+                    <td class="meal-title">${DAY_NAMES[day]}</td>
+                    <td style="white-space: pre-line;">${escapeHtml(dayData.breakfast)}</td>
+                    <td style="white-space: pre-line;">${escapeHtml(dayData.lunch)}</td>
+                    <td style="white-space: pre-line;">${escapeHtml(dayData.snack)}</td>
+                    <td style="white-space: pre-line;">${escapeHtml(dayData.dinner)}</td>
+                    <td style="text-align: center;"><div class="workout-circle ${isWorkout ? 'active' : ''}" data-day="${day}"></div></td>
+                </tr>`;
+            }
+        }
+        html += '</tbody></table>';
+        container.innerHTML = html;
+        
+        document.querySelectorAll('.workout-circle').forEach(circle => {
+            circle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const day = circle.getAttribute('data-day');
+                toggleWorkoutDay(day);
+            });
+        });
+        
+        if(menuEditMode) {
+            document.querySelectorAll('.menu-input').forEach(inp => {
+                inp.addEventListener('change', function() {
+                    const day = this.getAttribute('data-day');
+                    const meal = this.getAttribute('data-meal');
+                    if(currentMenu[day] && currentMenu[day][meal] !== undefined) {
+                        currentMenu[day][meal] = this.value;
+                    }
+                });
+            });
+        }
+    }
+    
+    // ===================== УПРАЖНЕНИЯ =====================
+    function loadExercises() {
+        const saved = localStorage.getItem('fitness_custom_exercises_table');
+        if(saved) { try { currentExercises = JSON.parse(saved); } catch(e) {} }
+        renderExercisesTable();
+    }
+    
+    function saveExercises() {
+        localStorage.setItem('fitness_custom_exercises_table', JSON.stringify(currentExercises));
+        renderExercisesTable();
+    }
+    
+    function resetExercises() {
+        currentExercises = JSON.parse(JSON.stringify(ORIGINAL_EXERCISES_DATA));
+        saveExercises();
+    }
+    
+    function addExerciseRow(dayKey) {
+        if(!currentExercises[dayKey]) currentExercises[dayKey] = { title: `${DAY_NAMES[dayKey]} — тренировка`, exercises: [] };
+        currentExercises[dayKey].exercises.push({ name: "Новое упражнение", weight: "—", sets: "3", reps: "10" });
+        renderExercisesTable();
+    }
+    
+    function deleteExerciseRow(dayKey, index) {
+        if(currentExercises[dayKey] && currentExercises[dayKey].exercises[index]) {
+            currentExercises[dayKey].exercises.splice(index, 1);
+            renderExercisesTable();
+        }
+    }
+    
+    function updateExerciseField(dayKey, index, field, value) {
+        if(currentExercises[dayKey] && currentExercises[dayKey].exercises[index]) {
+            currentExercises[dayKey].exercises[index][field] = value;
+        }
+    }
+    
+    function updateDayTitle(dayKey, value) {
+        if(currentExercises[dayKey]) {
+            currentExercises[dayKey].title = value;
+        }
+    }
+    
+    function renderExercisesTable() {
+        const container = document.getElementById('exercisesContainer');
+        if(!container) return;
+        let html = '';
+        for(let day of DAYS) {
+            const dayData = currentExercises[day] || { title: `${DAY_NAMES[day]} — день отдыха`, exercises: [] };
+            const isRestDay = dayData.exercises.length === 0 && (dayData.title.includes("день отдыха") || dayData.title.includes("отдых"));
+            
+            html += `<div style="margin-bottom: 28px; border: 1px solid #ddecd6; border-radius: 20px; padding: 12px; background: #fefef9;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
+                    ${exercisesEditMode ? 
+                        `<input type="text" class="menu-input" style="font-weight: bold; font-size: 1rem; width: auto; flex: 2;" value="${escapeHtml(dayData.title)}" data-day-title="${day}">` :
+                        `<h3 style="color: #1f5420; font-size: 1rem;">📌 ${escapeHtml(dayData.title)} ${isRestDay ? '<span class="rest-day-badge">🚫 день отдыха</span>' : ''}</h3>`
+                    }
+                </div>
+                <table class="exercise-table">
+                    <thead><tr><th>Упражнение</th><th>Вес (кг)</th><th>Подходы</th><th>Повторы</th>${exercisesEditMode ? '<th style="width: 50px;"></th>' : ''}</tr></thead>
+                    <tbody>`;
+            
+            if(dayData.exercises.length === 0) {
+                if(exercisesEditMode) {
+                    html += `<tr><td colspan="5" style="text-align: center; color: #999; padding: 20px;">Нет упражнений. Нажмите "+ Добавить упражнение"</td></tr>`;
+                } else {
+                    html += `<tr><td colspan="4" style="text-align: center; color: #b97f10; padding: 16px;">🚫 День отдыха (можно добавить упражнения в режиме редактирования)</td></tr>`;
+                }
+            } else {
+                for(let i = 0; i < dayData.exercises.length; i++) {
+                    const ex = dayData.exercises[i];
+                    if(exercisesEditMode) {
+                        html += `<tr>
+                            <td><input class="exercise-input" style="min-width: 120px;" value="${escapeHtml(ex.name)}" data-day="${day}" data-index="${i}" data-field="name"></td>
+                            <td><input class="exercise-input" style="width: 70px;" value="${escapeHtml(ex.weight)}" data-day="${day}" data-index="${i}" data-field="weight"></td>
+                            <td><input class="exercise-input" style="width: 70px;" value="${escapeHtml(ex.sets)}" data-day="${day}" data-index="${i}" data-field="sets"></td>
+                            <td><input class="exercise-input" style="width: 80px;" value="${escapeHtml(ex.reps)}" data-day="${day}" data-index="${i}" data-field="reps"></td>
+                            <td><button class="delete-row-btn" data-day="${day}" data-index="${i}">🗑</button></td>
+                        </tr>`;
+                    } else {
+                        html += `<tr>
+                            <td style="white-space: pre-line;">${escapeHtml(ex.name)}</td>
+                            <td>${escapeHtml(ex.weight)}</td>
+                            <td>${escapeHtml(ex.sets)}</td>
+                            <td>${escapeHtml(ex.reps)}</td>
+                        </tr>`;
+                    }
+                }
+            }
+            html += `</tbody></table>`;
+            if(exercisesEditMode) {
+                html += `<div style="margin-top: 8px;"><button class="add-row-btn" data-day="${day}">+ Добавить упражнение</button></div>`;
+            }
+            html += `</div>`;
+        }
+        container.innerHTML = html;
+        
+        if(exercisesEditMode) {
+            document.querySelectorAll('[data-day-title]').forEach(inp => {
+                inp.addEventListener('change', (e) => {
+                    updateDayTitle(inp.getAttribute('data-day-title'), inp.value);
+                });
+            });
+            document.querySelectorAll('.exercise-input').forEach(inp => {
+                inp.addEventListener('change', (e) => {
+                    const day = inp.getAttribute('data-day');
+                    const index = parseInt(inp.getAttribute('data-index'));
+                    const field = inp.getAttribute('data-field');
+                    updateExerciseField(day, index, field, inp.value);
+                });
+            });
+            document.querySelectorAll('.delete-row-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const day = btn.getAttribute('data-day');
+                    const index = parseInt(btn.getAttribute('data-index'));
+                    deleteExerciseRow(day, index);
+                });
+            });
+            document.querySelectorAll('.add-row-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    addExerciseRow(btn.getAttribute('data-day'));
+                });
+            });
+        }
+    }
+    
+    // ===================== ЧЕК-ЛИСТ =====================
+    const CHECK_ITEMS = [
+        { id: "breakfast", label: "Завтрак (белок + сложные углеводы)", emoji: "🥣" },
+        { id: "lunch", label: "Обед (белок + овощи + крупа)", emoji: "🍱" },
+        { id: "snack", label: "Перекус (по расписанию)", emoji: "🍎" },
+        { id: "dinner", label: "Ужин (белок + овощи, без круп)", emoji: "🌙" },
+        { id: "water", label: "Вода 1.5–2 л", emoji: "💧" },
+        { id: "noSugar", label: "Нет сахара / алкоголя", emoji: "🚫" },
+        { id: "workout", label: "Тренировка (по плану)", emoji: "🏋️‍♀️" },
+        { id: "vacuumPlank", label: "Вакуум + планка", emoji: "🧘‍♀️" },
+        { id: "sleep", label: "Сон 7–8 часов", emoji: "😴" }
+    ];
+    
+    let checklistData = {};
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+    let selectedDate = new Date(); selectedDate.setHours(0,0,0,0);
+    
+    function loadChecklistData() {
+        const saved = localStorage.getItem('fit_checklist_app');
+        if(saved) { try { checklistData = JSON.parse(saved); } catch(e){} }
+        if(!checklistData) checklistData = {};
+    }
+    
+    function saveChecklistData() {
+        localStorage.setItem('fit_checklist_app', JSON.stringify(checklistData));
+    }
+    
+    function getDateKey(date) {
+        let y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0');
+        return `${y}-${m}-${d}`;
+    }
+    
+    function getDayData(date) {
+        let key = getDateKey(date);
+        if(!checklistData[key]) checklistData[key] = {};
+        return checklistData[key];
+    }
+    
+    function setItemChecked(date, itemId, checked) {
+        let dayData = getDayData(date);
+        if(checked) dayData[itemId] = true;
+        else delete dayData[itemId];
+        saveChecklistData();
+        renderChecklistForDate(date);
+        renderCalendar();
+        updateWeekProgress(date);
+    }
+    
+    function getDayCompletion(date) {
+        let dayData = getDayData(date);
+        let cnt = 0;
+        for(let item of CHECK_ITEMS) if(dayData[item.id]) cnt++;
+        return cnt;
+    }
+    
+    function renderChecklistForDate(date) {
+        let dayData = getDayData(date);
+        let container = document.getElementById("checklistItems");
+        if(!container) return;
+        let dateStr = `${date.getDate()} ${date.toLocaleString('ru',{month:'long'})}`;
+        document.getElementById("selectedDateTitle").innerHTML = `📌 ${dateStr}, ${date.toLocaleString('ru',{weekday:'long'})}`;
+        let html = '';
+        for(let item of CHECK_ITEMS){
+            let isChecked = !!dayData[item.id];
+            html += `<div class="check-item"><div><span style="font-size:1.2rem;margin-right:8px;">${item.emoji}</span>${item.label}</div><div class="check-toggle ${isChecked?'done':''}" data-item="${item.id}">${isChecked?'✓':'○'}</div></div>`;
+        }
+        container.innerHTML = html;
+        document.querySelectorAll('.check-toggle').forEach(el => {
+            el.addEventListener('click', (e) => {
+                let itemId = el.getAttribute('data-item');
+                let was = el.classList.contains('done');
+                setItemChecked(date, itemId, !was);
+            });
+        });
+        let done = getDayCompletion(date);
+        document.getElementById("dayStats").innerHTML = `✅ выполнено ${done} из ${CHECK_ITEMS.length}`;
+    }
+    
+    function getWeekRange(date){
+        let d = new Date(date);
+        let dow = d.getDay();
+        let mondayOffset = dow === 0 ? -6 : 1 - dow;
+        let monday = new Date(d);
+        monday.setDate(d.getDate() + mondayOffset);
+        let sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        return {start: monday, end: sunday};
+    }
+    
+    function updateWeekProgress(selDate){
+        let {start, end} = getWeekRange(selDate);
+        let total = 0, done = 0, cur = new Date(start);
+        while(cur <= end){
+            let dayData = checklistData[getDateKey(cur)] || {};
+            for(let it of CHECK_ITEMS){ total++; if(dayData[it.id]) done++; }
+            cur.setDate(cur.getDate() + 1);
+        }
+        let p = total === 0 ? 0 : Math.round(done/total*100);
+        document.getElementById("weekProgress").innerHTML = `📅 неделя: ${p}% (${done}/${total})`;
+    }
+    
+    function renderCalendar(){
+        let first = new Date(currentYear, currentMonth, 1);
+        let startWeekday = first.getDay();
+        let offset = startWeekday === 0 ? 6 : startWeekday - 1;
+        let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        let prevDays = new Date(currentYear, currentMonth, 0).getDate();
+        let grid = document.getElementById("calendarGrid");
+        grid.innerHTML = "";
+        let today = new Date(); today.setHours(0,0,0,0);
+        for(let i = 0; i < 42; i++){
+            let dayNum, dateObj, isCurr = true;
+            if(i < offset){
+                let d = prevDays - (offset - i) + 1;
+                dateObj = new Date(currentYear, currentMonth - 1, d);
+                dayNum = d; isCurr = false;
+            } else if(i >= offset + daysInMonth){
+                let d = i - (offset + daysInMonth) + 1;
+                dateObj = new Date(currentYear, currentMonth + 1, d);
+                dayNum = d; isCurr = false;
+            } else {
+                dayNum = i - offset + 1;
+                dateObj = new Date(currentYear, currentMonth, dayNum);
+                isCurr = true;
+            }
+            let isSelected = dateObj.toDateString() === selectedDate.toDateString();
+            let isToday = dateObj.toDateString() === today.toDateString();
+            let compl = getDayCompletion(dateObj);
+            let hint = (compl === CHECK_ITEMS.length && isCurr) ? '✨' : (compl > 0 && isCurr) ? '●' : '';
+            let cls = `day-cell ${!isCurr ? 'other-month' : ''} ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`;
+            let cell = document.createElement("div");
+            cell.className = cls;
+            cell.innerHTML = `<div>${dayNum}</div><div style="font-size:9px;">${hint}</div>`;
+            cell.addEventListener("click", () => {
+                selectedDate = new Date(dateObj);
+                renderCalendar();
+                renderChecklistForDate(selectedDate);
+                updateWeekProgress(selectedDate);
+            });
+            grid.appendChild(cell);
+        }
+        let monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+        document.getElementById("monthYearDisplay").innerText = `${monthNames[currentMonth]} ${currentYear}`;
+    }
+    
+    function changeMonth(delta){
+        let nm = currentMonth + delta, ny = currentYear;
+        if(nm < 0){ nm = 11; ny--; }
+        if(nm > 11){ nm = 0; ny++; }
+        currentYear = ny; currentMonth = nm;
+        let newSel = new Date(selectedDate);
+        newSel.setFullYear(currentYear, currentMonth, Math.min(selectedDate.getDate(), new Date(currentYear, currentMonth+1, 0).getDate()));
+        selectedDate = newSel;
+        renderCalendar();
+        renderChecklistForDate(selectedDate);
+        updateWeekProgress(selectedDate);
+    }
+    
+    function resetWeek(){
+        if(!confirm("Сбросить все отметки за эту неделю?")) return;
+        let {start, end} = getWeekRange(selectedDate);
+        let cur = new Date(start);
+        while(cur <= end){
+            let key = getDateKey(cur);
+            if(checklistData[key]){
+                for(let it of CHECK_ITEMS) delete checklistData[key][it.id];
+                if(Object.keys(checklistData[key]).length === 0) delete checklistData[key];
+            }
+            cur.setDate(cur.getDate() + 1);
+        }
+        saveChecklistData();
+        renderCalendar();
+        renderChecklistForDate(selectedDate);
+        updateWeekProgress(selectedDate);
+    }
+    
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>]/g, function(m){
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // ===================== PWA INSTALL =====================
+    let deferredPrompt;
+    const installBtn = document.getElementById('installPwaBtn');
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'inline-block';
+    });
+    
+    installBtn.addEventListener('click', async () => {
+        if(deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if(outcome === 'accepted') {
+                installBtn.style.display = 'none';
+            }
+            deferredPrompt = null;
+        }
+    });
+    
+    // ===================== ИНИЦИАЛИЗАЦИЯ =====================
+    loadMenu();
+    loadExercises();
+    loadChecklistData();
+    renderCalendar();
+    renderChecklistForDate(selectedDate);
+    updateWeekProgress(selectedDate);
+    
+    document.getElementById("prevMonthBtn")?.addEventListener("click", () => changeMonth(-1));
+    document.getElementById("nextMonthBtn")?.addEventListener("click", () => changeMonth(1));
+    document.getElementById("resetWeekBtn")?.addEventListener("click", resetWeek);
+    
+    document.getElementById("editMenuBtn")?.addEventListener("click", () => {
+        menuEditMode = true;
+        document.getElementById('editMenuBtn').style.display = 'none';
+        document.getElementById('saveMenuBtn').style.display = 'inline-block';
+        document.getElementById('resetMenuBtn').style.display = 'inline-block';
+        renderMenuTable();
+    });
+    
+    document.getElementById("saveMenuBtn")?.addEventListener("click", () => {
+        saveMenu();
+        menuEditMode = false;
+        document.getElementById('editMenuBtn').style.display = 'inline-block';
+        document.getElementById('saveMenuBtn').style.display = 'none';
+        document.getElementById('resetMenuBtn').style.display = 'none';
+        renderMenuTable();
+    });
+    
+    document.getElementById("resetMenuBtn")?.addEventListener("click", () => {
+        resetMenu();
+        if(menuEditMode) {
+            menuEditMode = false;
+            document.getElementById('editMenuBtn').style.display = 'inline-block';
+            document.getElementById('saveMenuBtn').style.display = 'none';
+            document.getElementById('resetMenuBtn').style.display = 'none';
+        }
+        renderMenuTable();
+    });
+    
+    document.getElementById("editExercisesBtn")?.addEventListener("click", () => {
+        exercisesEditMode = true;
+        document.getElementById('editExercisesBtn').style.display = 'none';
+        document.getElementById('saveExercisesBtn').style.display = 'inline-block';
+        document.getElementById('resetExercisesBtn').style.display = 'inline-block';
+        renderExercisesTable();
+    });
+    
+    document.getElementById("saveExercisesBtn")?.addEventListener("click", () => {
+        saveExercises();
+        exercisesEditMode = false;
+        document.getElementById('editExercisesBtn').style.display = 'inline-block';
+        document.getElementById('saveExercisesBtn').style.display = 'none';
+        document.getElementById('resetExercisesBtn').style.display = 'none';
+        renderExercisesTable();
+    });
+    
+    document.getElementById("resetExercisesBtn")?.addEventListener("click", () => {
+        resetExercises();
+        if(exercisesEditMode) {
+            exercisesEditMode = false;
+            document.getElementById('editExercisesBtn').style.display = 'inline-block';
+            document.getElementById('saveExercisesBtn').style.display = 'none';
+            document.getElementById('resetExercisesBtn').style.display = 'none';
+        }
+        renderExercisesTable();
+    });
+    
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = {
+        checklist: document.getElementById('tab-checklist'),
+        menu: document.getElementById('tab-menu'),
+        exercises: document.getElementById('tab-exercises')
+    };
+    
+    tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            tabs.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            Object.keys(contents).forEach(k => contents[k].classList.remove('active'));
+            if(tabId === 'checklist') contents.checklist.classList.add('active');
+            if(tabId === 'menu') { contents.menu.classList.add('active'); renderMenuTable(); }
+            if(tabId === 'exercises') { contents.exercises.classList.add('active'); renderExercisesTable(); }
+        });
+    });
+    
+    // Service Worker
+    if('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW error:', err));
+    }
+    
+    // Динамический манифест
+    const manifest = {
+        name: "Фитнес-помощник",
+        short_name: "Фитнес",
+        description: "Чек-лист привычек, меню на неделю, программа тренировок",
+        start_url: ".",
+        display: "standalone",
+        theme_color: "#2e7d32",
+        background_color: "#e5f0e2",
+        icons: [
+            { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232e7d32'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E💪%3C/text%3E%3C/svg%3E", sizes: "192x192", type: "image/svg+xml" }
+        ]
+    };
+    const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(manifestBlob);
+    const manifestLink = document.createElement('link');
+    manifestLink.rel = 'manifest';
+    manifestLink.href = manifestURL;
+    document.head.appendChild(manifestLink);
+</script>
+</body>
+</html>
