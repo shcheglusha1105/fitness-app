@@ -174,14 +174,27 @@
             color: #1f6e1c;
             font-size: 1.4rem;
         }
-        .modal-content input {
+        .password-wrapper {
+            position: relative;
+            margin-bottom: 12px;
+        }
+        .password-wrapper input {
             width: 100%;
             padding: 12px;
-            margin-bottom: 12px;
+            padding-right: 40px;
             border: 1px solid #cde2c6;
             border-radius: 28px;
             font-size: 14px;
             outline: none;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            color: #888;
         }
         .modal-content button {
             width: 100%;
@@ -534,7 +547,6 @@
     
     const DEFAULT_WORKOUT_DAYS = { mon: false, tue: false, wed: true, thu: true, fri: false, sat: true, sun: true };
     
-    // ===================== ПОЛНЫЕ УПРАЖНЕНИЯ (все дни) =====================
     const DEFAULT_EXERCISES = {
         mon: { title: "ПН — день отдыха", exercises: [] },
         tue: { title: "ВТ — день отдыха", exercises: [] },
@@ -664,11 +676,32 @@
         try {
             const response = await fetch(`${API_URL}${endpoint}`, { method, headers, body: data ? JSON.stringify(data) : undefined });
             return await response.json();
-        } catch { return {}; }
+        } catch (err) {
+            console.error('API error:', err);
+            return { error: 'Сервер недоступен' };
+        }
     }
     
-    async function registerUser(email, password, name, surname, age, weight) {
-        return await apiRequest('/api/register', 'POST', { email, password, name, surname, age, weight });
+    async function registerAndLogin(email, password, name, surname, age, weight) {
+        // Сначала регистрация
+        const registerResult = await apiRequest('/api/register', 'POST', { email, password, name, surname, age, weight });
+        if (!registerResult.success) {
+            return { success: false, error: registerResult.error };
+        }
+        // Затем автоматический вход
+        const loginResult = await apiRequest('/api/login', 'POST', { email, password });
+        if (loginResult.token) {
+            authToken = loginResult.token;
+            currentUser = loginResult.user;
+            isAdmin = false;
+            isGuest = false;
+            localStorage.setItem('fitness_auth_token', authToken);
+            localStorage.setItem('fitness_user', JSON.stringify(currentUser));
+            localStorage.removeItem('fitness_is_admin');
+            await loadUserData();
+            return { success: true };
+        }
+        return { success: false, error: 'Регистрация прошла, но не удалось войти' };
     }
     
     async function loginUser(email, password) {
@@ -975,15 +1008,87 @@
         const modal = document.createElement('div'); modal.className = 'modal';
         modal.innerHTML = `<div class="modal-content"><h2>Вход / Регистрация</h2>
                             <div class="auth-tabs"><div id="loginTabBtn" class="auth-tab" style="background:#2e7d32;color:white;">Вход</div><div id="registerTabBtn" class="auth-tab" style="background:#e1efdc;">Регистрация</div></div>
-                            <div id="loginForm"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPassword" placeholder="Пароль"><button id="loginSubmitBtn">Войти</button><div class="note-text" style="margin-top:8px;">👑 Админ: admin@fitness.ru / admin123</div></div>
-                            <div id="registerForm" style="display:none;"><input type="text" id="regName" placeholder="Имя"><input type="text" id="regSurname" placeholder="Фамилия"><input type="number" id="regAge" placeholder="Возраст"><input type="number" id="regWeight" placeholder="Вес (кг)"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPassword" placeholder="Пароль (мин. 6 символов)"><input type="password" id="regConfirmPassword" placeholder="Подтвердите пароль"><button id="registerSubmitBtn">Зарегистрироваться</button></div>
+                            <div id="loginForm">
+                                <input type="email" id="loginEmail" placeholder="Email">
+                                <div class="password-wrapper"><input type="password" id="loginPassword" placeholder="Пароль"><span class="toggle-password" data-target="loginPassword">👁️</span></div>
+                                <button id="loginSubmitBtn">Войти</button>
+                                <div class="note-text" style="margin-top:8px;">👑 Админ: admin@fitness.ru / admin123</div>
+                            </div>
+                            <div id="registerForm" style="display:none;">
+                                <input type="text" id="regName" placeholder="Имя">
+                                <input type="text" id="regSurname" placeholder="Фамилия">
+                                <input type="number" id="regAge" placeholder="Возраст">
+                                <input type="number" id="regWeight" placeholder="Вес (кг)">
+                                <input type="email" id="regEmail" placeholder="Email">
+                                <div class="password-wrapper"><input type="password" id="regPassword" placeholder="Пароль (мин. 6 символов)"><span class="toggle-password" data-target="regPassword">👁️</span></div>
+                                <div class="password-wrapper"><input type="password" id="regConfirmPassword" placeholder="Подтвердите пароль"><span class="toggle-password" data-target="regConfirmPassword">👁️</span></div>
+                                <button id="registerSubmitBtn">Зарегистрироваться</button>
+                            </div>
                             <button class="close-btn" id="closeModalBtn">Закрыть</button></div>`;
         document.body.appendChild(modal);
+        
+        // Функция для переключения видимости пароля
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.textContent = '🙈';
+                } else {
+                    input.type = 'password';
+                    this.textContent = '👁️';
+                }
+            });
+        });
+        
         const loginTab = document.getElementById('loginTabBtn'), registerTab = document.getElementById('registerTabBtn'), loginForm = document.getElementById('loginForm'), registerForm = document.getElementById('registerForm');
         loginTab.onclick = () => { loginTab.style.background = '#2e7d32'; loginTab.style.color = 'white'; registerTab.style.background = '#e1efdc'; registerTab.style.color = '#2a6428'; loginForm.style.display = 'block'; registerForm.style.display = 'none'; };
         registerTab.onclick = () => { registerTab.style.background = '#2e7d32'; registerTab.style.color = 'white'; loginTab.style.background = '#e1efdc'; loginTab.style.color = '#2a6428'; loginForm.style.display = 'none'; registerForm.style.display = 'block'; };
-        document.getElementById('loginSubmitBtn').onclick = async () => { const res = await loginUser(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); if (res.success) { modal.remove(); location.reload(); } else alert(res.error); };
-        document.getElementById('registerSubmitBtn').onclick = async () => { const name = document.getElementById('regName').value, surname = document.getElementById('regSurname').value, age = document.getElementById('regAge').value, weight = document.getElementById('regWeight').value, email = document.getElementById('regEmail').value, pwd = document.getElementById('regPassword').value, confirm = document.getElementById('regConfirmPassword').value; if (!name || !surname || !age || !weight || !email || !pwd) { alert('Заполните все поля'); return; } if (pwd.length < 6) { alert('Пароль минимум 6 символов'); return; } if (pwd !== confirm) { alert('Пароли не совпадают'); return; } const res = await registerUser(email, pwd, name, surname, age, weight); if (res.success) { alert('Регистрация успешна! Теперь войдите.'); loginTab.click(); } else alert(res.error || 'Ошибка регистрации'); };
+        
+        document.getElementById('loginSubmitBtn').onclick = async () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const res = await loginUser(email, password);
+            if (res.success) {
+                modal.remove();
+                location.reload();
+            } else {
+                alert(res.error || 'Ошибка входа');
+            }
+        };
+        
+        document.getElementById('registerSubmitBtn').onclick = async () => {
+            const name = document.getElementById('regName').value;
+            const surname = document.getElementById('regSurname').value;
+            const age = document.getElementById('regAge').value;
+            const weight = document.getElementById('regWeight').value;
+            const email = document.getElementById('regEmail').value;
+            const pwd = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirmPassword').value;
+            
+            if (!name || !surname || !age || !weight || !email || !pwd) {
+                alert('Заполните все поля');
+                return;
+            }
+            if (pwd.length < 6) {
+                alert('Пароль минимум 6 символов');
+                return;
+            }
+            if (pwd !== confirm) {
+                alert('Пароли не совпадают');
+                return;
+            }
+            
+            const res = await registerAndLogin(email, pwd, name, surname, age, weight);
+            if (res.success) {
+                modal.remove();
+                location.reload();
+            } else {
+                alert(res.error || 'Ошибка регистрации');
+            }
+        };
+        
         document.getElementById('closeModalBtn').onclick = () => modal.remove();
     }
     
