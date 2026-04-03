@@ -482,6 +482,33 @@
             color: #ff9800;
             margin: 16px 0;
         }
+        .pro-info {
+            background: #f0f7ed;
+            border-radius: 20px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .pro-info h3 {
+            color: #1f5420;
+            margin-bottom: 8px;
+        }
+        .pro-info ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+        .footer-links {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #cde2c6;
+            font-size: 11px;
+            color: #6e7c68;
+        }
+        .footer-links a {
+            color: #2e7d32;
+            text-decoration: none;
+            margin: 0 5px;
+        }
         @media (max-width: 900px) {
             .menu-table td, .menu-table th { font-size: 10px; padding: 6px 4px; }
         }
@@ -533,6 +560,28 @@
         <div id="exercisesUpgradeMsg" class="upgrade-message" style="display:none;">🔒 Доступ к редактированию закончился. Оформите PRO подписку на 1 год — 300 ₽.<br><button id="upgradeFromExercisesBtn" class="upgrade-btn" style="margin-top:8px;">🚀 Оформить PRO (300₽/год)</button></div>
         <div class="note-text">💡 В режиме редактирования можно добавлять/удалять строки упражнений.</div>
     </div>
+
+    <!-- Блок с описанием PRO подписки для ЮKassa -->
+    <div class="pro-info">
+        <h3>⭐ PRO подписка — 300 ₽/год</h3>
+        <p>После оплаты вы получите:</p>
+        <ul>
+            <li>✅ Неограниченное редактирование меню на неделю</li>
+            <li>✅ Неограниченное редактирование тренировок</li>
+            <li>✅ Сохранение всех данных на сервере</li>
+            <li>✅ Доступ на всех устройствах</li>
+            <li>✅ Техническая поддержка</li>
+        </ul>
+        <p><strong>Оплата единоразовая — доступ на 365 дней.</strong></p>
+    </div>
+
+    <!-- Подвал с юридическими ссылками -->
+    <div class="footer-links">
+        <a href="https://shcheglusha1105.github.io/fitness-app/catalog.html">Каталог услуг</a> &nbsp;|&nbsp;
+        <a href="https://shcheglusha1105.github.io/fitness-app/offer.html">Пользовательское соглашение</a> &nbsp;|&nbsp;
+        <a href="https://shcheglusha1105.github.io/fitness-app/privacy.html">Политика конфиденциальности</a> &nbsp;|&nbsp;
+        <a href="https://shcheglusha1105.github.io/fitness-app/contacts.html">Контакты и реквизиты</a>
+    </div>
 </div>
 
 <script>
@@ -544,7 +593,7 @@
     const ADMIN_EMAIL = 'admin@fitness.ru';
     const ADMIN_PASSWORD = 'admin123';
     
-    // ===================== ПОЛНОЕ МЕНЮ (7 дней) =====================
+    // ===================== ДАННЫЕ ПО УМОЛЧАНИЮ =====================
     const DEFAULT_MENU = {
         mon: { breakfast: "Омлет из 2 яиц + шпинат\n½ авокадо\nзеленый чай", lunch: "Куриная грудка 150г\nгречка 120г\nсалат огурцы/помидоры\n1 ч.л. оливкового масла", snack: "—", dinner: "Рыба запеченная 150г\nтушеные кабачки с цветной капустой 300г\n1 ч.л. масла" },
         tue: { breakfast: "Греческий йогурт 2% 200г\nягоды + 1 ч.л. меда\n2 отварных яйца", lunch: "Индейка 150г\nкиноа 120г\nовощи-гриль 300г\n1 ч.л. масла", snack: "—", dinner: "Творог 5% 180г\nогурец + зелень\n10г грецких орехов" },
@@ -754,6 +803,7 @@
         localStorage.removeItem('fitness_is_admin');
         loadLocalData();
         renderAll();
+        location.reload();
     }
     
     async function loadUserData() {
@@ -820,7 +870,7 @@
     function renderMenuTable() {
         const container = document.getElementById('menuContainer');
         if (!container) return;
-        let html = '<table class="menu-table"><thead> caption<th>День</th><th>Завтрак</th><th>Обед</th><th>Перекус</th><th>Ужин</th><th style="width:60px;">🏋️</th> </thead><tbody>';
+        let html = '<table class="menu-table"><thead></td><th>День</th><th>Завтрак</th><th>Обед</th><th>Перекус</th><th>Ужин</th><th style="width:60px;">🏋️</th></thead><tbody>';
         for (let day of DAYS) {
             const d = currentMenu[day];
             if (menuEditMode && canEdit()) {
@@ -831,7 +881,7 @@
                             <td><textarea class="menu-input" data-day="${day}" data-meal="snack" rows="2">${escapeHtml(d.snack)}</textarea></td>
                             <td><textarea class="menu-input" data-day="${day}" data-meal="dinner" rows="3">${escapeHtml(d.dinner)}</textarea></td>
                             <td style="text-align:center;"><div class="workout-circle ${currentWorkoutDays[day] ? 'active' : ''}" data-day="${day}"></div></td>
-                         </tr>`;
+                          </tr>`;
             } else {
                 html += `<tr>
                             <td class="meal-title" style="font-weight:bold;background:#eef5ea;">${DAY_NAMES[day]}</td>
@@ -840,10 +890,10 @@
                             <td style="white-space:pre-line;">${escapeHtml(d.snack)}</td>
                             <td style="white-space:pre-line;">${escapeHtml(d.dinner)}</td>
                             <td style="text-align:center;"><div class="workout-circle ${currentWorkoutDays[day] ? 'active' : ''}" data-day="${day}"></div></td>
-                         </tr>`;
+                          </tr>`;
             }
         }
-        html += '</tbody> <tr>';
+        html += '</tbody></table>';
         container.innerHTML = html;
         document.querySelectorAll('.workout-circle').forEach(c => c.addEventListener('click', (e) => { e.stopPropagation(); toggleWorkoutDay(c.getAttribute('data-day')); }));
         if (menuEditMode && canEdit()) {
@@ -923,19 +973,19 @@
                                     <td><input class="exercise-input" style="width:70px;" value="${escapeHtml(ex.sets)}" data-day="${day}" data-idx="${i}" data-field="sets"></td>
                                     <td><input class="exercise-input" style="width:90px;" value="${escapeHtml(ex.reps)}" data-day="${day}" data-idx="${i}" data-field="reps"></td>
                                     <td><button class="delete-row-btn" data-day="${day}" data-idx="${i}">🗑</button></td>
-                                 </tr>`;
+                                  </tr>`;
                     } else {
                         html += `<tr>
                                     <td style="white-space:pre-line;">${escapeHtml(ex.name)}</td>
                                     <td>${escapeHtml(ex.weight)}</td>
                                     <td>${escapeHtml(ex.sets)}</td>
                                     <td>${escapeHtml(ex.reps)}</td>
-                                 </tr>`;
+                                  </tr>`;
                     }
                 }
             }
             html += `</tbody>
-                     </table>`;
+                      </table>`;
             if (exercisesEditMode && canEdit()) {
                 html += `<div style="margin-top:8px;"><button class="add-row-btn" data-day="${day}">+ Добавить упражнение</button></div>`;
             }
@@ -1020,7 +1070,6 @@
                                 <input type="email" id="loginEmail" placeholder="Email">
                                 <div class="password-wrapper"><input type="password" id="loginPassword" placeholder="Пароль"><span class="toggle-password" data-target="loginPassword">👁️</span></div>
                                 <button id="loginSubmitBtn">Войти</button>
-                                
                             </div>
                             <div id="registerForm" style="display:none;">
                                 <input type="text" id="regName" placeholder="Имя">
@@ -1172,11 +1221,5 @@
     }
     init();
 </script>
-<div style="text-align:center; margin-top:24px; padding-top:16px; border-top:1px solid #cde2c6; font-size:11px; color:#6e7c68;">
-    <a href="https://shcheglusha1105.github.io/fitness-app/catalog.html" style="color:#2e7d32;">Каталог услуг</a> &nbsp;|&nbsp;
-    <a href="https://shcheglusha1105.github.io/fitness-app/offer.html" style="color:#2e7d32;">Пользовательское соглашение</a> &nbsp;|&nbsp;
-    <a href="https://shcheglusha1105.github.io/fitness-app/privacy.html" style="color:#2e7d32;">Политика конфиденциальности</a> &nbsp;|&nbsp;
-    <a href="https://shcheglusha1105.github.io/fitness-app/contacts.html" style="color:#2e7d32;">Контакты и реквизиты</a>
-</div>
 </body>
 </html>
