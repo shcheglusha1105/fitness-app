@@ -838,12 +838,15 @@
     }
     
     function upgradeToPro() {
+    // 1. Проверяем, авторизован ли пользователь
     if (!authToken) {
         alert('Сначала войдите в аккаунт');
         return;
     }
-    
-    const modal = document.createElement('div'); modal.className = 'modal';
+
+    // 2. Показываем модальное окно с предложением оплатить
+    const modal = document.createElement('div');
+    modal.className = 'modal';
     modal.innerHTML = `<div class="modal-content">
         <h2>⭐ Оформление PRO подписки</h2>
         <p>Доступ ко всем функциям редактирования на <strong>1 год</strong>.</p>
@@ -853,9 +856,11 @@
         <button class="close-btn" id="closePayBtn">Отмена</button>
     </div>`;
     document.body.appendChild(modal);
-    
+
+    // 3. Обработчик кнопки «Оплатить»
     document.getElementById('payConfirmBtn').onclick = async () => {
         try {
+            // Отправляем запрос на ваш бэкенд для создания платежа
             const response = await fetch(`${API_URL}/api/create-payment`, {
                 method: 'POST',
                 headers: {
@@ -864,16 +869,21 @@
                 }
             });
             const data = await response.json();
+
+            // 4. Если получили ссылку на оплату — перенаправляем пользователя
             if (data.confirmation_url) {
                 window.location.href = data.confirmation_url;
             } else {
                 alert('Ошибка создания платежа: ' + (data.error || 'Попробуйте позже'));
             }
         } catch (err) {
-            alert('Ошибка соединения с сервером');
+            console.error('Payment error:', err);
+            alert('Ошибка соединения с сервером. Попробуйте позже.');
         }
-        modal.remove();
+        modal.remove(); // Закрываем модальное окно
     };
+
+    // 5. Обработчик кнопки «Отмена»
     document.getElementById('closePayBtn').onclick = () => modal.remove();
 }
     
