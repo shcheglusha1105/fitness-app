@@ -838,25 +838,44 @@
     }
     
     function upgradeToPro() {
-        const modal = document.createElement('div'); modal.className = 'modal';
-        const endDate = new Date();
-        endDate.setDate(endDate.getDate() + PRO_DAYS);
-        modal.innerHTML = `<div class="modal-content"><h2>⭐ Оформление PRO подписки</h2><p>Доступ ко всем функциям редактирования на <strong>1 год</strong>.</p><div class="price">💰 ${PRO_PRICE} ₽</div><p>После оплаты вы получите доступ к редактированию меню и тренировок.</p><button id="payConfirmBtn" style="background:#ff9800;">💳 Оплатить ${PRO_PRICE} ₽</button><button class="close-btn" id="closePayBtn">Отмена</button></div>`;
-        document.body.appendChild(modal);
-        document.getElementById('payConfirmBtn').onclick = async () => {
-            alert(`🚀 Демо-режим: оплата ${PRO_PRICE} ₽ прошла успешно!\nPRO подписка активирована до ${endDate.toLocaleDateString()}`);
-            if (!isGuest && currentUser) {
-                await apiRequest('/api/upgrade-pro', 'POST', { expires_at: endDate.toISOString() });
-                proExpiresAt = endDate.toISOString();
-                trialEndsAt = null;
-                if (currentUser) currentUser.subscription = 'pro';
-                saveAllDataToServer();
-            }
-            modal.remove();
-            renderAll();
-        };
-        document.getElementById('closePayBtn').onclick = () => modal.remove();
+    if (!authToken) {
+        alert('Сначала войдите в аккаунт');
+        return;
     }
+    
+    const modal = document.createElement('div'); modal.className = 'modal';
+    modal.innerHTML = `<div class="modal-content">
+        <h2>⭐ Оформление PRO подписки</h2>
+        <p>Доступ ко всем функциям редактирования на <strong>1 год</strong>.</p>
+        <div class="price">💰 300 ₽</div>
+        <p>Вы будете перенаправлены на страницу оплаты.</p>
+        <button id="payConfirmBtn" style="background:#ff9800;">💳 Оплатить 300 ₽</button>
+        <button class="close-btn" id="closePayBtn">Отмена</button>
+    </div>`;
+    document.body.appendChild(modal);
+    
+    document.getElementById('payConfirmBtn').onclick = async () => {
+        try {
+            const response = await fetch(`${API_URL}/api/create-payment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+            const data = await response.json();
+            if (data.confirmation_url) {
+                window.location.href = data.confirmation_url;
+            } else {
+                alert('Ошибка создания платежа: ' + (data.error || 'Попробуйте позже'));
+            }
+        } catch (err) {
+            alert('Ошибка соединения с сервером');
+        }
+        modal.remove();
+    };
+    document.getElementById('closePayBtn').onclick = () => modal.remove();
+}
     
     // МЕНЮ
     function toggleWorkoutDay(day) {
